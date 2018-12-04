@@ -1,6 +1,6 @@
-use specs::{Component, DenseVecStorage, ReadStorage, System};
-use kolli_desu::shapes::{Shape, Circle, ConvexPolygon};
+use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
 use na::{Point2, Vector2};
+use specs::{Component, DenseVecStorage, ReadStorage, System};
 
 use physics::Position;
 
@@ -34,12 +34,9 @@ impl Shape for Hitbox {
 struct CollisionSystem;
 
 impl<'a> System<'a> for CollisionSystem {
-    type SystemData = (
-        ReadStorage<'a, Hitbox>,
-        ReadStorage<'a, Position>,
-    );
+    type SystemData = (ReadStorage<'a, Hitbox>, ReadStorage<'a, Position>);
 
-    fn run(&mut self, (hitboxes, positions) : Self::SystemData) {
+    fn run(&mut self, (hitboxes, positions): Self::SystemData) {
         //(&hitboxes, &positions)
     }
 }

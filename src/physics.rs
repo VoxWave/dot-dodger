@@ -1,6 +1,6 @@
 use na::{Point2, Vector2};
-use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage, WriteStorage};
 use specs::prelude::ParallelIterator;
+use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage, WriteStorage};
 
 #[derive(Debug, Component)]
 #[storage(VecStorage)]
@@ -21,12 +21,12 @@ impl<'a> System<'a> for PhysicsSystem {
         ReadStorage<'a, Acceleration>,
     );
 
-    fn run(&mut self, (mut positions, mut velocities, accelerations) : Self::SystemData) {
+    fn run(&mut self, (mut positions, mut velocities, accelerations): Self::SystemData) {
         (&mut positions, &mut velocities, &accelerations)
-        .par_join()
-        .for_each(|(pos, vel, acc)|{
-            pos.0 += vel.0;
-            vel.0 += acc.0;
-        })
+            .par_join()
+            .for_each(|(pos, vel, acc)| {
+                pos.0 += vel.0;
+                vel.0 += acc.0;
+            })
     }
 }
