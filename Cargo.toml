@@ -6,3 +6,6 @@ authors = ["Your Name <victor_bankowski@hotmail.com>"]
 [dependencies]
 piston_window = "0.85"
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
+specs = "0.14"
+specs-derive = "0.3"
+nalgebra = "0.14"
