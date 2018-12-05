@@ -6,14 +6,11 @@ extern crate specs;
 extern crate specs_derive;
 
 use piston_window::*;
-use specs::{Component, NullStorage};
 
+mod bullet;
 mod collision;
 mod physics;
-
-#[derive(Component, Debug, Default)]
-#[storage(NullStorage)]
-struct PlayerComponent;
+mod player;
 
 fn main() {
     let mut window: PistonWindow = WindowSettings::new("Hello Piston!", (640, 480))

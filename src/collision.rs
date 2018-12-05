@@ -1,8 +1,11 @@
 use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
 use na::{Point2, Vector2};
-use specs::{Component, DenseVecStorage, ReadStorage, System};
+use specs::prelude::ParallelIterator;
+use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System};
 
+use bullet::BulletComponent;
 use physics::Position;
+use player::get_player;
 
 #[derive(Component, Debug)]
 enum Hitbox {
@@ -34,9 +37,19 @@ impl Shape for Hitbox {
 struct CollisionSystem;
 
 impl<'a> System<'a> for CollisionSystem {
-    type SystemData = (ReadStorage<'a, Hitbox>, ReadStorage<'a, Position>);
+    type SystemData = (
+        ReadStorage<'a, Hitbox>, 
+        ReadStorage<'a, Position>,
+        ReadStorage<'a, BulletComponent>,
+    );
 
     fn run(&mut self, (hitboxes, positions): Self::SystemData) {
-        //(&hitboxes, &positions)
+        let player = get_player();
+
+        (&hitboxes, &positions)
+            .par_join()
+            .for_each(|(hbx, pos)|{
+
+            });
     }
 }

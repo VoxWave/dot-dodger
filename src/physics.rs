@@ -27,6 +27,6 @@ impl<'a> System<'a> for PhysicsSystem {
             .for_each(|(pos, vel, acc)| {
                 pos.0 += vel.0;
                 vel.0 += acc.0;
-            })
+            });
     }
 }
