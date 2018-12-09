@@ -1,7 +1,7 @@
-extern crate kolli_desu;
-extern crate nalgebra as na;
-extern crate piston_window;
-extern crate specs;
+
+use nalgebra as na;
+
+
 #[macro_use]
 extern crate specs_derive;
 
