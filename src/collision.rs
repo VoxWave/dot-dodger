@@ -1,13 +1,13 @@
 use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
 use kolli_desu::gjk::collides;
-use na::{Point2, Vector2};
+use crate::na::{Point2, Vector2};
 use specs::prelude::ParallelIterator;
 use specs::{Component, DenseVecStorage, Join, ParJoin, ReadExpect, ReadStorage, System};
 
-use bullet::BulletComponent;
-use physics::Position;
-use player::PlayerHandle;
-use handle_death;
+use crate::bullet::BulletComponent;
+use crate::physics::Position;
+use crate::player::PlayerHandle;
+use crate::handle_death;
 
 #[derive(Component, Debug)]
 pub enum Hitbox {

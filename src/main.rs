@@ -7,9 +7,9 @@ extern crate specs_derive;
 
 use std::time::{Duration, Instant};
 
-use bullet::BulletComponent;
-use collision::CollisionSystem;
-use physics::{PhysicsSystem, Position, Velocity, Acceleration};
+use crate::bullet::BulletComponent;
+use crate::collision::CollisionSystem;
+use crate::physics::{PhysicsSystem, Position, Velocity, Acceleration};
 use piston_window::*;
 use specs::{DispatcherBuilder, World};
 

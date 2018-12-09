@@ -1,4 +1,4 @@
-use na::{Point2, Vector2};
+use crate::na::{Point2, Vector2};
 use specs::prelude::ParallelIterator;
 use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage, WriteStorage};
 

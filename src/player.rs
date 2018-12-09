@@ -1,4 +1,4 @@
-use physics::Velocity;
+use crate::physics::Velocity;
 use specs::{Entity, WriteStorage, System, WriteExpect};
 
 // #[derive(Component, Debug, Default)]
@@ -16,7 +16,7 @@ impl<'a> System<'a> for PlayerControlSystem {
     );
 
     fn run(&mut self, (player, mut velocities): Self::SystemData) {
-        let mut player_vel = velocities.get_mut(player.0);
+        let _player_vel = velocities.get_mut(player.0);
         
     }
 }
