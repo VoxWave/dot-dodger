@@ -7,12 +7,12 @@ use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage
 pub struct Position(pub Point2<f32>);
 
 #[derive(Debug, Component)]
-struct Velocity(pub Vector2<f32>);
+pub struct Velocity(pub Vector2<f32>);
 
 #[derive(Debug, Component)]
-struct Acceleration(pub Vector2<f32>);
+pub struct Acceleration(pub Vector2<f32>);
 
-struct PhysicsSystem;
+pub struct PhysicsSystem;
 
 impl<'a> System<'a> for PhysicsSystem {
     type SystemData = (

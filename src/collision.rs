@@ -10,7 +10,7 @@ use player::PlayerHandle;
 use handle_death;
 
 #[derive(Component, Debug)]
-enum Hitbox {
+pub enum Hitbox {
     Circle(Circle),
     ConvexPolygon(ConvexPolygon),
     Point(Point2<f32>),
@@ -36,7 +36,7 @@ impl Shape for Hitbox {
     }
 }
 
-struct CollisionSystem;
+pub struct CollisionSystem;
 
 impl<'a> System<'a> for CollisionSystem {
     type SystemData = (
