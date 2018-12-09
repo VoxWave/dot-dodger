@@ -4,13 +4,13 @@ use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage
 
 #[derive(Debug, Component)]
 #[storage(VecStorage)]
-pub struct Position(Point2<f32>);
+pub struct Position(pub Point2<f32>);
 
 #[derive(Debug, Component)]
-struct Velocity(Vector2<f32>);
+struct Velocity(pub Vector2<f32>);
 
 #[derive(Debug, Component)]
-struct Acceleration(Vector2<f32>);
+struct Acceleration(pub Vector2<f32>);
 
 struct PhysicsSystem;
 

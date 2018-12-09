@@ -1,11 +1,13 @@
 use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
+use kolli_desu::gjk::collides;
 use na::{Point2, Vector2};
 use specs::prelude::ParallelIterator;
-use specs::{Component, DenseVecStorage, Join, ParJoin, ReadStorage, System};
+use specs::{Component, DenseVecStorage, Join, ParJoin, ReadExpect, ReadStorage, System};
 
 use bullet::BulletComponent;
 use physics::Position;
-use player::get_player;
+use player::PlayerHandle;
+use handle_death;
 
 #[derive(Component, Debug)]
 enum Hitbox {
@@ -38,18 +40,21 @@ struct CollisionSystem;
 
 impl<'a> System<'a> for CollisionSystem {
     type SystemData = (
+        ReadExpect<'a, PlayerHandle>,
         ReadStorage<'a, Hitbox>, 
         ReadStorage<'a, Position>,
         ReadStorage<'a, BulletComponent>,
     );
 
-    fn run(&mut self, (hitboxes, positions, bullets): Self::SystemData) {
-        let player = get_player_handle();
-        let (player_hitbox, player_pos) = (&hitboxes, &positions).join().get(player);
-        (&hitboxes, &positions, &bullets)
+    fn run(&mut self, (player, hitboxes, positions, bullets): Self::SystemData) {
+        let (p_hitbox, p_pos) = (hitboxes.get(player.0).unwrap(), positions.get(player.0).unwrap());
+        let collision = (&hitboxes, &positions, &bullets)
             .par_join()
-            .for_each(|(hbx, pos, _)|{
-
+            .find_any(|(hitbox, position, _)| {
+                collides((*hitbox, position.0), (p_hitbox, p_pos.0))
             });
+        if let Some(_) = collision {
+            handle_death();
+        }
     }
 }

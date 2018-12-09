@@ -1,9 +1,7 @@
-use specs::{Component, Entity, NullStorage};
+use specs::{Entity};
 
-#[derive(Component, Debug, Default)]
-#[storage(NullStorage)]
-struct PlayerComponent;
+// #[derive(Component, Debug, Default)]
+// #[storage(NullStorage)]
+// struct PlayerComponent;
 
-pub fn get_player_handle() -> Entity {
-    
-}
+pub struct PlayerHandle(pub Entity);

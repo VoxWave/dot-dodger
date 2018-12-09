@@ -23,3 +23,7 @@ fn main() {
         });
     }
 }
+
+fn handle_death() {
+    
+}
