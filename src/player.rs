@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::physics::Velocity;
 use specs::{Entity, WriteStorage, System, WriteExpect};
 
@@ -9,21 +11,24 @@ pub struct PlayerHandle(pub Entity);
 
 pub struct PlayerControlSystem {
     button_states: HashMap<Direction, bool>,
-};
+    input_channel: Channel
+}
 
 impl PlayerControlSystem {
-    pub fn new() -> Self {
-        let button_states = HashMap::new();
+    pub fn new(input_channel: Channel<Direction>) -> Self {
+        let mut button_states = HashMap::new();
         button_states.insert(Direction::Up, false);
         button_states.insert(Direction::Down, false);
         button_states.insert(Direction::Left, false);
         button_states.insert(Direction::Right, false);
         PlayerControlSystem {
             button_states,
+            input_channel,
         } 
     }
 }
 
+#[derive(Eq, Hash, PartialEq,)]
 enum Direction {
     Up, Down, Left, Right,
 }
