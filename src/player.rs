@@ -41,7 +41,18 @@ impl<'a> System<'a> for PlayerControlSystem {
     );
 
     fn run(&mut self, (player, mut velocities): Self::SystemData) {
-        let _player_vel = velocities.get_mut(player.0);
-        
+        let player_vel = velocities.get_mut(player.0);
+        let mut new_vel = Vector::zero();
+        for (dir, pressed) in &self.button_states {
+            if pressed {
+                player_vel += match dir {
+                    Direction::Up => Vector::new(0., 1.),
+                    Direction::Down => Vector::new(0., -1.),
+                    Direction::Left => Vector::new(-1., 0.),
+                    Direction::Right => Vector::new(1., 0.),
+                }
+            }
+        }
+        *player_vel.0 = new_vel;
     }
 }
