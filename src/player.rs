@@ -7,15 +7,20 @@ use specs::{Entity, WriteStorage, System, WriteExpect};
 // #[storage(NullStorage)]
 // struct PlayerComponent;
 
+#[derive(Eq, Hash, PartialEq,)]
+enum Direction {
+    Up, Down, Left, Right,
+}
+
 pub struct PlayerHandle(pub Entity);
 
 pub struct PlayerControlSystem {
     button_states: HashMap<Direction, bool>,
-    input_channel: Channel
+    input_channel: Receiver<(Direction, bool)>,
 }
 
 impl PlayerControlSystem {
-    pub fn new(input_channel: Channel<Direction>) -> Self {
+    pub fn new(input_channel: Receiver<Direction>) -> Self {
         let mut button_states = HashMap::new();
         button_states.insert(Direction::Up, false);
         button_states.insert(Direction::Down, false);
@@ -26,11 +31,14 @@ impl PlayerControlSystem {
             input_channel,
         } 
     }
-}
 
-#[derive(Eq, Hash, PartialEq,)]
-enum Direction {
-    Up, Down, Left, Right,
+    fn handle_inputs(&mut self) {
+        // inputs need to be mapped to one button only because this breaks if multiple buttons correspond
+        // to the same input.
+        for (direction, pressed) in self.input_channel.try_iter() {
+            self.button_states.insert(direction, pressed);
+        }
+    }
 }
 
 impl<'a> System<'a> for PlayerControlSystem {
@@ -41,6 +49,7 @@ impl<'a> System<'a> for PlayerControlSystem {
     );
 
     fn run(&mut self, (player, mut velocities): Self::SystemData) {
+        self.handle_inputs();
         let player_vel = velocities.get_mut(player.0);
         let mut new_vel = Vector::zero();
         for (dir, pressed) in &self.button_states {
@@ -53,6 +62,7 @@ impl<'a> System<'a> for PlayerControlSystem {
                 }
             }
         }
-        *player_vel.0 = new_vel;
+        new_vel.normalize();
+        *player_vel.0 = new_vel.normalize();
     }
 }
