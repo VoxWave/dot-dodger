@@ -50,12 +50,16 @@ fn main() {
         .with(CollisionSystem, "collision_system", &["physics_system"])
         .build();
 
-    let mut window: PistonWindow = WindowSettings::new("Hello Piston!", (640, 480))
+    let mut window: PistonWindow = WindowSettings::new("dot-dodger", (640, 480))
         .exit_on_esc(true)
         .build()
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
     let mut instant = Instant::now();
     while let Some(e) = window.next() {
+        match e {
+            Event::Input(input) => send.send(input.clone()).unwrap(),
+            _ => {},
+        }
         if instant.elapsed() >= FRAME {
             dispatcher.dispatch(&mut world.res);
             world.maintain();
