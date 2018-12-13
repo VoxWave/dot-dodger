@@ -1,4 +1,7 @@
 
+use std::sync::mpsc::channel;
+use crate::collision::Hitbox;
+use specs::world::Builder;
 use nalgebra as na;
 
 
@@ -9,9 +12,12 @@ use std::time::{Duration, Instant};
 
 use crate::bullet::BulletComponent;
 use crate::collision::CollisionSystem;
+use crate::player::{PlayerControlSystem, PlayerHandle};
 use crate::physics::{PhysicsSystem, Position, Velocity, Acceleration};
 use piston_window::*;
 use specs::{DispatcherBuilder, World};
+
+use crate::na::{Point2, Vector2, zero};
 
 mod bullet;
 mod collision;
@@ -24,11 +30,23 @@ fn main() {
     let mut world = World::new();
     world.register::<Position>();
     world.register::<Velocity>();
+    world.register::<Hitbox>();
     world.register::<Acceleration>();
     world.register::<BulletComponent>();
     
+    let player = world.create_entity()
+        .with(Position(Point2::new(0., 0.)))
+        .with(Velocity(zero()))
+        .with(Acceleration(zero()))
+        .with(Hitbox::Point(Point2::new(0., 0.)))
+        .build();
+    world.add_resource(PlayerHandle(player));
+
+    let (send, recv) = channel();
+
     let mut dispatcher = DispatcherBuilder::new()
-        .with(PhysicsSystem, "physics_system", &[])
+        .with(PlayerControlSystem::new(recv), "player_control_system", &[])
+        .with(PhysicsSystem, "physics_system", &["player_control_system"])
         .with(CollisionSystem, "collision_system", &["physics_system"])
         .build();
 
