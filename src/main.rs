@@ -55,13 +55,13 @@ fn main() {
         .build()
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
     let mut instant = Instant::now();
-    while let Some(e) = window.next() {
-        window.draw_2d(&e, |_c, g| {
-            clear([0.0, 0.0, 0.0, 1.0], g);
-        });
+    while let Some(e) = window.next() {    
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
-            _ => {
+            _ => { 
+                window.draw_2d(&e, |_c, g| {
+                    clear([0.0, 0.0, 0.0, 1.0], g);
+                });
             },
         }
         if instant.elapsed() >= FRAME {
