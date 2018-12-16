@@ -56,18 +56,19 @@ fn main() {
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
     let mut instant = Instant::now();
     while let Some(e) = window.next() {
+        window.draw_2d(&e, |_c, g| {
+            clear([0.0, 0.0, 0.0, 1.0], g);
+        });
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
-            _ => {},
+            _ => {
+            },
         }
         if instant.elapsed() >= FRAME {
             dispatcher.dispatch(&mut world.res);
             world.maintain();
             instant = Instant::now();
         }
-        window.draw_2d(&e, |_c, g| {
-            clear([0.0, 0.0, 0.0, 1.0], g);
-        });
     }
 }
 
