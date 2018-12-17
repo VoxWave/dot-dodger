@@ -63,10 +63,10 @@ fn main() {
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
             _ => {
-                window.draw_2d(&e, |_c, g| {
+                window.draw_2d(&e, |c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
-                    &mut world.exec(
-                        render
+                    &mut world.exec( |s|
+                        render(c, g, s)
                     );
                 });
             }
