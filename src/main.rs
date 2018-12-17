@@ -1,19 +1,20 @@
-
-use std::sync::mpsc::channel;
-use crate::collision::Hitbox;
-use specs::world::Builder;
-use nalgebra as na;
-
-
 #[macro_use]
 extern crate specs_derive;
 
+use specs::ReadExpect;
+use specs::ReadStorage;
+use specs::world::Builder;
+use nalgebra as na;
+
+use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
 
+use crate::collision::Hitbox;
 use crate::bullet::BulletComponent;
 use crate::collision::CollisionSystem;
 use crate::player::{PlayerControlSystem, PlayerHandle};
 use crate::physics::{PhysicsSystem, Position, Velocity, Acceleration};
+use crate::rendering::Visual;
 use piston_window::*;
 use specs::{DispatcherBuilder, World};
 
@@ -23,6 +24,7 @@ mod bullet;
 mod collision;
 mod physics;
 mod player;
+mod rendering;
 
 const FRAME: Duration = Duration::from_millis(1000/60);
 
@@ -33,6 +35,7 @@ fn main() {
     world.register::<Hitbox>();
     world.register::<Acceleration>();
     world.register::<BulletComponent>();
+    world.register::<Visual>();
     
     let player = world.create_entity()
         .with(Position(Point2::new(0., 0.)))
@@ -61,6 +64,14 @@ fn main() {
             _ => { 
                 window.draw_2d(&e, |_c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
+                    &mut world.exec(|(player, positions, visuals): (
+                        ReadExpect<PlayerHandle>, 
+                        ReadStorage<Position>,
+                        ReadStorage<Visual>
+                    )|
+                    {
+
+                    });
                 });
             },
         }
