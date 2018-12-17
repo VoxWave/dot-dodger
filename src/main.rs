@@ -1,24 +1,24 @@
 #[macro_use]
 extern crate specs_derive;
 
+use nalgebra as na;
+use specs::world::Builder;
 use specs::ReadExpect;
 use specs::ReadStorage;
-use specs::world::Builder;
-use nalgebra as na;
 
 use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
 
-use crate::collision::Hitbox;
 use crate::bullet::BulletComponent;
 use crate::collision::CollisionSystem;
+use crate::collision::Hitbox;
+use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
 use crate::player::{PlayerControlSystem, PlayerHandle};
-use crate::physics::{PhysicsSystem, Position, Velocity, Acceleration};
-use crate::rendering::Visual;
+use crate::rendering::{Visual, render};
 use piston_window::*;
 use specs::{DispatcherBuilder, World};
 
-use crate::na::{Point2, Vector2, zero};
+use crate::na::{zero, Point2, Vector2};
 
 mod bullet;
 mod collision;
@@ -26,7 +26,7 @@ mod physics;
 mod player;
 mod rendering;
 
-const FRAME: Duration = Duration::from_millis(1000/60);
+const FRAME: Duration = Duration::from_millis(1000 / 60);
 
 fn main() {
     let mut world = World::new();
@@ -36,8 +36,9 @@ fn main() {
     world.register::<Acceleration>();
     world.register::<BulletComponent>();
     world.register::<Visual>();
-    
-    let player = world.create_entity()
+
+    let player = world
+        .create_entity()
         .with(Position(Point2::new(0., 0.)))
         .with(Velocity(zero()))
         .with(Acceleration(zero()))
@@ -58,22 +59,17 @@ fn main() {
         .build()
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
     let mut instant = Instant::now();
-    while let Some(e) = window.next() {    
+    while let Some(e) = window.next() {
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
-            _ => { 
+            _ => {
                 window.draw_2d(&e, |_c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
-                    &mut world.exec(|(player, positions, visuals): (
-                        ReadExpect<PlayerHandle>, 
-                        ReadStorage<Position>,
-                        ReadStorage<Visual>
-                    )|
-                    {
-
-                    });
+                    &mut world.exec(
+                        render
+                    );
                 });
-            },
+            }
         }
         if instant.elapsed() >= FRAME {
             dispatcher.dispatch(&mut world.res);

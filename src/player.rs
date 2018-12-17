@@ -1,16 +1,19 @@
-use piston_window::{Button, Input};
 use piston_window::keyboard::Key;
+use piston_window::{Button, Input};
 use std::collections::HashMap;
 use std::sync::mpsc::Receiver;
 
-use crate::na::{Vector2, zero};
+use crate::na::{zero, Vector2};
 
 use crate::physics::Velocity;
-use specs::{Entity, WriteStorage, System, WriteExpect};
+use specs::{Entity, System, WriteExpect, WriteStorage};
 
-#[derive(Eq, Hash, PartialEq,)]
+#[derive(Eq, Hash, PartialEq)]
 pub enum Direction {
-    Up, Down, Left, Right,
+    Up,
+    Down,
+    Left,
+    Right,
 }
 
 pub struct PlayerHandle(pub Entity);
@@ -43,42 +46,35 @@ impl PlayerControlSystem {
             button_map,
             button_states,
             input_channel,
-        } 
+        }
     }
 
     fn handle_inputs(&mut self) {
         for input in self.input_channel.try_iter() {
             match input {
-                Input::Button(bs) => {
-                    match self.button_map.get(&bs.button) {
-                        Some(dir) => {
-                            use piston_window::ButtonState::*;
-                            let pressed = self.button_states.get_mut(dir).unwrap();
-                            match bs.state {
-                                Press => {
-                                    *pressed += 1;
-                                },
-                                Release => {
-                                    *pressed -= 1;
-                                }
+                Input::Button(bs) => match self.button_map.get(&bs.button) {
+                    Some(dir) => {
+                        use piston_window::ButtonState::*;
+                        let pressed = self.button_states.get_mut(dir).unwrap();
+                        match bs.state {
+                            Press => {
+                                *pressed += 1;
                             }
-                        },
-                        None => {},
+                            Release => {
+                                *pressed -= 1;
+                            }
+                        }
                     }
+                    None => {}
                 },
-                _ => {},
+                _ => {}
             }
-            
         }
     }
 }
 
 impl<'a> System<'a> for PlayerControlSystem {
-
-    type SystemData = (
-        WriteExpect<'a, PlayerHandle>,
-        WriteStorage<'a, Velocity>,
-    );
+    type SystemData = (WriteExpect<'a, PlayerHandle>, WriteStorage<'a, Velocity>);
 
     fn run(&mut self, (player, mut velocities): Self::SystemData) {
         self.handle_inputs();
