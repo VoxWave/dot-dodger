@@ -9,7 +9,7 @@ use specs::ReadStorage;
 use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
 
-use crate::bullet::BulletComponent;
+use crate::bullet::{BulletComponent, BulletPatternSystem};
 use crate::collision::CollisionSystem;
 use crate::collision::Hitbox;
 use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
@@ -39,10 +39,11 @@ fn main() {
 
     let player = world
         .create_entity()
-        .with(Position(Point2::new(0., 0.)))
+        .with(Position(Point2::new(200., 200.)))
         .with(Velocity(zero()))
         .with(Acceleration(zero()))
         .with(Hitbox::Point(Point2::new(0., 0.)))
+        .with(Visual::Circle([0., 0.7, 0., 1.], 10.))
         .build();
     world.add_resource(PlayerHandle(player));
 
@@ -50,6 +51,7 @@ fn main() {
 
     let mut dispatcher = DispatcherBuilder::new()
         .with(PlayerControlSystem::new(recv), "player_control_system", &[])
+        .with(BulletPatternSystem, "bullet_pattern_system", &[])
         .with(PhysicsSystem, "physics_system", &["player_control_system"])
         .with(CollisionSystem, "collision_system", &["physics_system"])
         .build();
@@ -65,9 +67,9 @@ fn main() {
             _ => {
                 window.draw_2d(&e, |c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
-                    &mut world.exec( |s|
-                        render(c, g, s)
-                    );
+                    &mut world.exec( |s| {
+                        render(c, g, s);
+                    });
                 });
             }
         }
