@@ -3,8 +3,7 @@ extern crate specs_derive;
 
 use nalgebra as na;
 use specs::world::Builder;
-use specs::ReadExpect;
-use specs::ReadStorage;
+use specs::Join;
 
 use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
@@ -18,7 +17,7 @@ use crate::rendering::{Visual, render};
 use piston_window::*;
 use specs::{DispatcherBuilder, World};
 
-use crate::na::{zero, Point2, Vector2};
+use crate::na::{zero, Point2};
 
 mod bullet;
 mod collision;
@@ -74,6 +73,8 @@ fn main() {
             }
         }
         if instant.elapsed() >= FRAME {
+            let count = world.entities().join().count();
+            println!("{}, {:?}", count, instant.elapsed());
             dispatcher.dispatch(&mut world.res);
             world.maintain();
             instant = Instant::now();
