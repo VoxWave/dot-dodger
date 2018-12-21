@@ -1,10 +1,10 @@
-use specs::{Builder, Component, Entities, LazyUpdate, Read, ReadStorage, NullStorage, System};
 use kolli_desu::shapes::Circle;
+use specs::{Builder, Component, Entities, LazyUpdate, NullStorage, Read, ReadStorage, System};
 
-use crate::physics::{Acceleration, Position, Velocity};
 use crate::collision::Hitbox;
+use crate::na::{zero, Point2, Vector2};
+use crate::physics::{Acceleration, Position, Velocity};
 use crate::rendering::Visual;
-use crate::na::{Vector2, Point2, zero};
 
 #[derive(Component, Debug, Default)]
 #[storage(NullStorage)]
@@ -13,10 +13,7 @@ pub struct BulletComponent;
 pub struct BulletPatternSystem;
 
 impl<'a> System<'a> for BulletPatternSystem {
-    type SystemData = (
-        Entities<'a>,
-        Read<'a, LazyUpdate>,
-    );
+    type SystemData = (Entities<'a>, Read<'a, LazyUpdate>);
 
     fn run(&mut self, (entities, world): Self::SystemData) {
         world
@@ -31,6 +28,4 @@ impl<'a> System<'a> for BulletPatternSystem {
     }
 }
 
-fn create_bullet() {
-
-}
+fn create_bullet() {}

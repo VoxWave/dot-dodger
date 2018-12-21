@@ -49,19 +49,17 @@ impl PlayerControlSystem {
         use piston_window::ButtonState::*;
         for input in self.input_channel.try_iter() {
             match input {
-                Input::Button(bs) => {
-                    match bs.state {
-                        Press => {
-                            println!("press");
-                            self.button_states.insert(bs.button);
-                        },
-                        Release => {
-                            println!("release");
-                            self.button_states.remove(&bs.button);
-                        }
+                Input::Button(bs) => match bs.state {
+                    Press => {
+                        println!("press");
+                        self.button_states.insert(bs.button);
+                    }
+                    Release => {
+                        println!("release");
+                        self.button_states.remove(&bs.button);
                     }
                 },
-                _ => {},
+                _ => {}
             }
         }
     }
@@ -74,7 +72,11 @@ impl<'a> System<'a> for PlayerControlSystem {
         self.handle_inputs();
         let player_vel = velocities.get_mut(player.0).unwrap();
         let mut new_vel = zero::<Vector2<f32>>();
-        let pressed_buttons: HashSet<&Direction> = self.button_states.iter().flat_map(|b| self.button_map.get(b)).collect();
+        let pressed_buttons: HashSet<&Direction> = self
+            .button_states
+            .iter()
+            .flat_map(|b| self.button_map.get(b))
+            .collect();
         for dir in pressed_buttons {
             new_vel += match dir {
                 Direction::Up => Vector2::new(0., 1.),
@@ -84,7 +86,7 @@ impl<'a> System<'a> for PlayerControlSystem {
             }
         }
         if new_vel != zero() {
-            player_vel.0 = new_vel.normalize()*2.7;
+            player_vel.0 = new_vel.normalize() * 2.7;
         } else {
             player_vel.0 = new_vel;
         }

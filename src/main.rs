@@ -13,7 +13,7 @@ use crate::collision::CollisionSystem;
 use crate::collision::Hitbox;
 use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
 use crate::player::{PlayerControlSystem, PlayerHandle};
-use crate::rendering::{Visual, render};
+use crate::rendering::{render, Visual};
 use piston_window::*;
 use specs::{DispatcherBuilder, World};
 
@@ -66,7 +66,7 @@ fn main() {
             _ => {
                 window.draw_2d(&e, |c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
-                    &mut world.exec( |s| {
+                    &mut world.exec(|s| {
                         render(c, g, s);
                     });
                 });

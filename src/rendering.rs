@@ -13,10 +13,7 @@ pub enum Visual {
 pub fn render(
     c: Context,
     g: &mut G2d,
-    (positions, visuals): (
-        ReadStorage<Position>,
-        ReadStorage<Visual>,
-    ),
+    (positions, visuals): (ReadStorage<Position>, ReadStorage<Visual>),
 ) {
     (&positions, &visuals).join().for_each(|(pos, vis)| {
         let x = pos.0.x as f64;
@@ -24,9 +21,14 @@ pub fn render(
         match vis {
             Circle(color, radius) => {
                 //Figure out where to fetch the resolution of the window so that I don't have to hardcore 480 for the height here.
-                ellipse(*color, [x - radius, 480. - (y - radius), 2.*radius, 2.*radius], c.transform, g);
-            },
-            _ => {},
+                ellipse(
+                    *color,
+                    [x - radius, 480. - (y - radius), 2. * radius, 2. * radius],
+                    c.transform,
+                    g,
+                );
+            }
+            _ => {}
         }
     });
 }
