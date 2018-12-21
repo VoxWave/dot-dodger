@@ -66,14 +66,14 @@ fn main() {
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
             _ => {
+                let render_time = Instant::now();
                 window.draw_2d(&e, |c, g| {
-                    let render_time = Instant::now();
                     clear([0.0, 0.0, 0.0, 1.0], g);
                     &mut world.exec(|s| {
                         render(c, g, s);
                     });
-                    println!("render: {:?}", render_time.elapsed());
                 });
+                println!("render: {:?}", render_time.elapsed());
             }
         }
         if instant.elapsed() >= FRAME {
