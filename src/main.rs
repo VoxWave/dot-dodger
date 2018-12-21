@@ -57,26 +57,30 @@ fn main() {
 
     let mut window: PistonWindow = WindowSettings::new("dot-dodger", (640, 480))
         .exit_on_esc(true)
+        .vsync(false)
         .build()
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
     let mut instant = Instant::now();
     while let Some(e) = window.next() {
+        println!("entities: {}", world.entities().join().count());
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
             _ => {
                 window.draw_2d(&e, |c, g| {
+                    let render_time = Instant::now();
                     clear([0.0, 0.0, 0.0, 1.0], g);
                     &mut world.exec(|s| {
                         render(c, g, s);
                     });
+                    println!("render: {:?}", render_time.elapsed());
                 });
             }
         }
         if instant.elapsed() >= FRAME {
-            let count = world.entities().join().count();
-            println!("{}, {:?}", count, instant.elapsed());
+            let dispatch_time = Instant::now();
             dispatcher.dispatch(&mut world.res);
             world.maintain();
+            println!("dispatch+maintain: {:?}", dispatch_time.elapsed());
             instant = Instant::now();
         }
     }
