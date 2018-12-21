@@ -26,7 +26,7 @@ pub struct PlayerControlSystem {
 
 impl PlayerControlSystem {
     pub fn new(input_channel: Receiver<Input>) -> Self {
-        let mut button_states = HashSet::new();
+        let button_states = HashSet::new();
         let mut button_map = HashMap::new();
         //TODO: make this configurable and not hardcoded.
         button_map.insert(Button::Keyboard(Key::W), Direction::Up);

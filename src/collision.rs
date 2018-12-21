@@ -2,7 +2,7 @@ use crate::na::{Point2, Vector2};
 use kolli_desu::gjk::collides;
 use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
 use specs::prelude::ParallelIterator;
-use specs::{Component, DenseVecStorage, Join, ParJoin, ReadExpect, ReadStorage, System};
+use specs::{Component, DenseVecStorage, ParJoin, ReadExpect, ReadStorage, System};
 
 use crate::bullet::BulletComponent;
 use crate::handle_death;
