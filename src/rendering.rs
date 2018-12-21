@@ -20,7 +20,7 @@ pub fn render(
         let y = pos.0.y as f64;
         match vis {
             Circle(color, radius) => {
-                //Figure out where to fetch the resolution of the window so that I don't have to hardcore 480 for the height here.
+                //Figure out where to fetch the resolution of the window so that I don't have to hardcode 480 for the height here.
                 ellipse(
                     *color,
                     [x - radius, 480. - (y - radius), 2. * radius, 2. * radius],
