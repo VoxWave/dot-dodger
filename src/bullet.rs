@@ -1,5 +1,5 @@
 use kolli_desu::shapes::Circle;
-use specs::{Builder, Component, Entities, LazyUpdate, NullStorage, Read, ReadStorage, System};
+use specs::{Builder, Component, Entity, Entities, LazyUpdate, NullStorage, Read, System};
 
 use crate::collision::Hitbox;
 use crate::na::{zero, Point2, Vector2};
@@ -16,16 +16,17 @@ impl<'a> System<'a> for BulletPatternSystem {
     type SystemData = (Entities<'a>, Read<'a, LazyUpdate>);
 
     fn run(&mut self, (entities, world): Self::SystemData) {
-        world
-            .create_entity(&entities)
-            .with(Visual::Circle([1., 0., 0., 1.], 5.))
-            .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), 5.)))
-            .with(Position(Point2::new(0., 0.)))
-            .with(Velocity(Vector2::new(1., 1.)))
-            .with(Acceleration(zero()))
-            .with(BulletComponent)
-            .build();
+        create_bullet(world.create_entity(&entities), Point2::new(0., 0.), Vector2::new(10., 10.), zero(), 5.);
     }
 }
 
-fn create_bullet() {}
+fn create_bullet(builder: impl Builder, pos: Point2<f32>, vel: Vector2<f32>, acc: Vector2<f32>, rad: f64) -> Entity {
+        builder
+            .with(Visual::Circle([1., 0., 0., 1.], rad))
+            .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))
+            .with(Position(pos))
+            .with(Velocity(vel))
+            .with(Acceleration(zero()))
+            .with(BulletComponent)
+            .build()
+}

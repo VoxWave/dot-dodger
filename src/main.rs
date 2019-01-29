@@ -1,12 +1,14 @@
 #[macro_use]
 extern crate specs_derive;
 
+use std::borrow::BorrowMut;
 use nalgebra as na;
 use specs::world::Builder;
 use specs::Join;
 
 use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
+use std::path::Path;
 
 use crate::bullet::{BulletComponent, BulletPatternSystem};
 use crate::collision::CollisionSystem;
@@ -36,16 +38,6 @@ fn main() {
     world.register::<BulletComponent>();
     world.register::<Visual>();
 
-    let player = world
-        .create_entity()
-        .with(Position(Point2::new(200., 200.)))
-        .with(Velocity(zero()))
-        .with(Acceleration(zero()))
-        .with(Hitbox::Point(Point2::new(0., 0.)))
-        .with(Visual::Circle([0., 0.7, 0., 1.], 10.))
-        .build();
-    world.add_resource(PlayerHandle(player));
-
     let (send, recv) = channel();
 
     let mut dispatcher = DispatcherBuilder::new()
@@ -60,27 +52,43 @@ fn main() {
         .vsync(false)
         .build()
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
+
+    let ref settings = TextureSettings::new();
+
+    let player_texture = Texture::from_path(
+        &mut *window.factory.borrow_mut(), 
+        Path::new("assets/ship_alternative.png"), 
+        Flip::None, 
+        settings,
+    ).unwrap();
+
+    let player = world
+        .create_entity()
+        .with(Position(Point2::new(200., 200.)))
+        .with(Velocity(zero()))
+        .with(Acceleration(zero()))
+        .with(Hitbox::Point(Point2::new(0., 0.)))
+        .with(Visual::Sprite(player_texture))
+        .build();
+    world.add_resource(PlayerHandle(player));
+
     let mut instant = Instant::now();
     while let Some(e) = window.next() {
         println!("entities: {}", world.entities().join().count());
         match e {
             Event::Input(input) => send.send(input.clone()).unwrap(),
             _ => {
-                let render_time = Instant::now();
                 window.draw_2d(&e, |c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
                     &mut world.exec(|s| {
                         render(c, g, s);
                     });
                 });
-                println!("render: {:?}", render_time.elapsed());
             }
         }
         if instant.elapsed() >= FRAME {
-            let dispatch_time = Instant::now();
             dispatcher.dispatch(&mut world.res);
             world.maintain();
-            println!("dispatch+maintain: {:?}", dispatch_time.elapsed());
             instant = Instant::now();
         }
     }
