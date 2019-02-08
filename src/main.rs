@@ -70,7 +70,8 @@ fn main() {
         .with(Velocity(zero()))
         .with(Acceleration(zero()))
         .with(Hitbox::Point(Point2::new(0., 0.)))
-        .with(Visual::Sprite(player_texture))
+        .with(Visual::Circle([1., 0., 0., 1.],10.))
+        // .with(Visual::Sprite(player_texture))
         .build();
     world.add_resource(PlayerHandle(player));
     world.add_resource(Tick(0));
