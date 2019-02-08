@@ -29,6 +29,8 @@ mod rendering;
 
 const FRAME: Duration = Duration::from_millis(1000 / 60);
 
+pub struct Tick(u64);
+
 fn main() {
     let mut world = World::new();
     world.register::<Position>();
@@ -71,6 +73,7 @@ fn main() {
         .with(Visual::Sprite(player_texture))
         .build();
     world.add_resource(PlayerHandle(player));
+    world.add_resource(Tick(0));
 
     let mut instant = Instant::now();
     while let Some(e) = window.next() {
@@ -89,6 +92,7 @@ fn main() {
         if instant.elapsed() >= FRAME {
             dispatcher.dispatch(&mut world.res);
             world.maintain();
+            world.write_resource::<Tick>().0 += 1;
             instant = Instant::now();
         }
     }

@@ -1,8 +1,9 @@
 use kolli_desu::shapes::Circle;
-use specs::{Builder, Component, Entity, Entities, LazyUpdate, NullStorage, Read, System};
+use specs::{Builder, Component, Entity, Entities, LazyUpdate, NullStorage, Read, ReadExpect, System};
 
+use crate::Tick;
 use crate::collision::Hitbox;
-use crate::na::{zero, Point2, Vector2};
+use crate::na::{zero, Point2, Vector2, Rotation2};
 use crate::physics::{Acceleration, Position, Velocity};
 use crate::rendering::Visual;
 
@@ -13,10 +14,13 @@ pub struct BulletComponent;
 pub struct BulletPatternSystem;
 
 impl<'a> System<'a> for BulletPatternSystem {
-    type SystemData = (Entities<'a>, Read<'a, LazyUpdate>);
+    type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadExpect<'a, Tick>);
 
-    fn run(&mut self, (entities, world): Self::SystemData) {
-        create_bullet(world.create_entity(&entities), Point2::new(0., 0.), Vector2::new(10., 10.), zero(), 5.);
+    fn run(&mut self, (entities, world, cur_tick): Self::SystemData) {
+        let mut t = cur_tick.0 as f32;
+        t /= 100.;
+        let rotation = Rotation2::new(t);
+        create_bullet(world.create_entity(&entities), Point2::new(200., 200.), rotation * Vector2::new(2., 2.), zero(), 5.);
     }
 }
 
