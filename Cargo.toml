@@ -5,7 +5,7 @@ authors = ["Your Name <victor_bankowski@hotmail.com>"]
 edition = "2018"
 
 [dependencies]
-piston_window = "0.85"
+amethyst = "0.10.0"
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
 specs = "0.14"
 specs-derive = "0.3"
