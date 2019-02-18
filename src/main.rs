@@ -2,13 +2,9 @@
 extern crate specs_derive;
 
 use amethyst::prelude::*;
-use amethyst::renderer::{DisplayConfig, DrawFlat2D, Event, Pipeline, RenderBundle, Stage, VirtualKeyCode};
 
-pub struct DotDodger;
-
-impl SimpleState for DotDodger {
-
-}
+mod game;
+mod rendering;
 
 fn main() -> amethyst::Result<()> {
     use amethyst::utils::application_root_dir;
