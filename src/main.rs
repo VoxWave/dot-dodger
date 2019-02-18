@@ -1,3 +1,41 @@
+#[macro_use]
+extern crate specs_derive;
+
+use amethyst::prelude::*;
+use amethyst::renderer::{DisplayConfig, DrawFlat2D, Event, Pipeline, RenderBundle, Stage, VirtualKeyCode};
+
+pub struct DotDodger;
+
+impl SimpleState for DotDodger {
+
+}
+
+fn main() -> amethyst::Result<()> {
+    use amethyst::utils::application_root_dir;
+
+    amethyst::start_logger(Default::default());
+    let path = format!("{}/resources/display_config.ron", application_root_dir());
+
+    let config = DisplayConfig::load(&path);
+
+    let pipe = Pipeline::build().with_stage(
+        Stage::with_backbuffer()
+            .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
+            .with_pass(DrawFlat2D::new())
+    );
+
+    let game_data = GameDataBuilder::default()
+        .with_bundle(
+            RenderBundle::new(pipe, Some(config))
+                .with_sprite_sheet_processor()
+    )?;
+
+    let mut game = Application::new("./", DotDodger, game_data)?;
+
+    game.run();
+
+    Ok(())
+}
 // #[macro_use]
 // extern crate specs_derive;
 
@@ -102,6 +140,3 @@
 // fn handle_death() {
 //     println!("dedness happen");
 // }
-fn main() {
-    println!("kaikki uusiks");
-}
