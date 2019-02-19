@@ -1,10 +1,20 @@
 #[macro_use]
 extern crate specs_derive;
 
+use amethyst::core::transform::TransformBundle;
 use amethyst::prelude::*;
+use amethyst::renderer::{DisplayConfig, DrawFlat2D, Pipeline, RenderBundle, Stage, VirtualKeyCode};
+use nalgebra as na;
 
+use game::DotDodger;
+
+mod bullet;
+// mod collision;
 mod game;
+mod physics;
 mod rendering;
+
+pub struct Tick(u64);
 
 fn main() -> amethyst::Result<()> {
     use amethyst::utils::application_root_dir;
@@ -24,7 +34,8 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(
             RenderBundle::new(pipe, Some(config))
                 .with_sprite_sheet_processor()
-    )?;
+    )?
+    .with_bundle(TransformBundle::new())?;
 
     let mut game = Application::new("./", DotDodger, game_data)?;
 
