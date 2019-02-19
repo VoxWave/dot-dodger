@@ -15,6 +15,10 @@ pub fn initialise_camera(world: &mut World) {
     world.create_entity().with(Camera::from(Projection::orthographic(0., CAMERA_HEIGHT, 0., CAMERA_WIDTH))).with(transform).build();
 }
 
+// pub fn load_spritesheet(world: &mut World) -> SpriteSheetHandle {
+
+// }
+
 // use crate::rendering::Visual::*;
 // use specs::{Component, DenseVecStorage, Join, ReadStorage};
 
