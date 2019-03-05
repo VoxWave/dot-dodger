@@ -4,13 +4,13 @@ use amethyst::ecs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, Ve
 
 #[derive(Debug, Component)]
 #[storage(VecStorage)]
-pub struct Position(pub Point2<f32>);
+pub struct Position(pub Point2<f64>);
 
 #[derive(Debug, Component)]
-pub struct Velocity(pub Vector2<f32>);
+pub struct Velocity(pub Vector2<f64>);
 
 #[derive(Debug, Component)]
-pub struct Acceleration(pub Vector2<f32>);
+pub struct Acceleration(pub Vector2<f64>);
 
 pub struct PhysicsSystem;
 

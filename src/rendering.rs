@@ -1,9 +1,13 @@
-use amethyst::core::transform::Transform;
-use amethyst::ecs::World;
-use amethyst::ecs::world::Builder;
-use amethyst::renderer::{
-    Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
-    SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,
+use amethyst::{
+    assets::{AssetStorage, Loader},
+    core::transform::Transform,
+    ecs::{
+        world::Builder,
+        World,
+    },
+    renderer::{
+        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet, SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,
+    },
 };
 
 pub const CAMERA_HEIGHT: f32 = 640.0;
@@ -15,9 +19,28 @@ pub fn initialise_camera(world: &mut World) {
     world.create_entity().with(Camera::from(Projection::orthographic(0., CAMERA_HEIGHT, 0., CAMERA_WIDTH))).with(transform).build();
 }
 
-// pub fn load_spritesheet(world: &mut World) -> SpriteSheetHandle {
-
-// }
+fn load_sprite_sheet(name: &str, world: &mut World) -> SpriteSheetHandle {
+    let texture_handle = {
+        let loader = world.read_resource::<Loader>();
+        let texture_storage = world.read_resource::<AssetStorage<Texture>>();
+        loader.load(
+            format!("assets/textures/{}.png", name),
+            PngFormat,
+            TextureMetadata::srgb_scale(),
+            (),
+            &texture_storage,
+        )
+    };
+    let loader = world.read_resource::<Loader>();
+    let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
+    loader.load(
+        format!("assets/textures/{}_spritesheet.ron", name), // Here we load the associated ron file
+        SpriteSheetFormat,
+        texture_handle, // We pass it the handle of the texture we want it to use
+        (),
+        &sprite_sheet_store,
+    )
+}
 
 // use crate::rendering::Visual::*;
 // use specs::{Component, DenseVecStorage, Join, ReadStorage};
