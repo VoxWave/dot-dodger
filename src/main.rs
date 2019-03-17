@@ -22,27 +22,28 @@ pub struct Tick(u64);
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
-    let path = format!("{}/assets/configs/display_config.ron", application_root_dir());
+    let path = format!(
+        "{}/assets/configs/display_config.ron",
+        application_root_dir()
+    );
 
     let config = DisplayConfig::load(&path);
 
     let pipe = Pipeline::build().with_stage(
         Stage::with_backbuffer()
             .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
-            .with_pass(DrawFlat2D::new().with_transparency(ColorMask::all(), ALPHA, None))
+            .with_pass(DrawFlat2D::new().with_transparency(ColorMask::all(), ALPHA, None)),
     );
 
     let binding_path = format!("{}/assets/configs/input_config.ron", application_root_dir());
-    let input_bundle = InputBundle::<String, String>::new().with_bindings_from_file(binding_path)?;
+    let input_bundle =
+        InputBundle::<String, String>::new().with_bindings_from_file(binding_path)?;
 
     let game_data = GameDataBuilder::default()
-        .with_bundle(
-            RenderBundle::new(pipe, Some(config))
-                .with_sprite_sheet_processor()
-    )?
-    .with_bundle(TransformBundle::new())?
-    .with_bundle(input_bundle)?
-    .with(PhysicsSystem, "physics_system", &["input_system"]);
+        .with_bundle(RenderBundle::new(pipe, Some(config)).with_sprite_sheet_processor())?
+        .with_bundle(TransformBundle::new())?
+        .with_bundle(input_bundle)?
+        .with(PhysicsSystem, "physics_system", &["input_system"]);
 
     let mut game = Application::new("./", DotDodger, game_data)?;
 
@@ -110,9 +111,9 @@ fn main() -> amethyst::Result<()> {
 //     let ref settings = TextureSettings::new();
 
 //     let player_texture = Texture::from_path(
-//         &mut *window.factory.borrow_mut(), 
-//         Path::new("assets/ship_alternative.png"), 
-//         Flip::None, 
+//         &mut *window.factory.borrow_mut(),
+//         Path::new("assets/ship_alternative.png"),
+//         Flip::None,
 //         settings,
 //     ).unwrap();
 

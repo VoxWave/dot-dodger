@@ -1,6 +1,8 @@
 use crate::na::{Point2, Vector2};
 use amethyst::ecs::prelude::ParallelIterator;
-use amethyst::ecs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage, WriteStorage};
+use amethyst::ecs::{
+    Component, DenseVecStorage, ParJoin, ReadStorage, System, VecStorage, WriteStorage,
+};
 
 #[derive(Debug, Component)]
 #[storage(VecStorage)]

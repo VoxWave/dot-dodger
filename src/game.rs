@@ -2,8 +2,8 @@ use amethyst::assets::{AssetStorage, Loader};
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::prelude::*;
 
-use crate::Tick;
 use crate::physics::{Acceleration, Position, Velocity};
+use crate::Tick;
 
 use crate::rendering;
 

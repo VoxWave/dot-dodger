@@ -1,12 +1,10 @@
 use amethyst::{
     assets::{AssetStorage, Loader},
     core::transform::Transform,
-    ecs::{
-        world::Builder,
-        World,
-    },
+    ecs::{world::Builder, World},
     renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet, SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,
+        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet, SpriteSheetFormat,
+        SpriteSheetHandle, Texture, TextureMetadata,
     },
 };
 
@@ -16,7 +14,16 @@ pub const CAMERA_WIDTH: f32 = 480.0;
 pub fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
     transform.set_z(1.0);
-    world.create_entity().with(Camera::from(Projection::orthographic(0., CAMERA_HEIGHT, 0., CAMERA_WIDTH))).with(transform).build();
+    world
+        .create_entity()
+        .with(Camera::from(Projection::orthographic(
+            0.,
+            CAMERA_HEIGHT,
+            0.,
+            CAMERA_WIDTH,
+        )))
+        .with(transform)
+        .build();
 }
 
 fn load_sprite_sheet(name: &str, world: &mut World) -> SpriteSheetHandle {
