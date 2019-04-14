@@ -5,8 +5,11 @@ authors = ["Your Name <victor_bankowski@hotmail.com>"]
 edition = "2018"
 
 [dependencies]
-amethyst = "0.10.0"
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
 specs-derive = "0.3"
 nalgebra = "0.14"
 modulator = "0.1.0"
+
+[dependencies.amethyst]
+version = "0.10.0"
+features = ["nightly"]

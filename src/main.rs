@@ -9,6 +9,7 @@ use amethyst::{
 };
 use nalgebra as na;
 
+use bullet::BulletPatternSystem;
 use game::DotDodger;
 use physics::PhysicsSystem;
 
@@ -43,6 +44,7 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(RenderBundle::new(pipe, Some(config)).with_sprite_sheet_processor())?
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
+        .with(BulletPatternSystem, "bullet_pattern_system", &[])
         .with(PhysicsSystem, "physics_system", &["input_system"]);
 
     let mut game = Application::new("./", DotDodger, game_data)?;

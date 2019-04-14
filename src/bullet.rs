@@ -29,6 +29,7 @@ impl<'a> System<'a> for BulletPatternSystem {
             zero(),
             5.,
         );
+        println!("bullet created")
     }
 }
 
@@ -44,7 +45,7 @@ fn create_bullet(
         // .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))
         .with(Position(pos))
         .with(Velocity(vel))
-        .with(Acceleration(zero()))
+        .with(Acceleration(acc))
         .with(BulletComponent)
         .build()
 }
