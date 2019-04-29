@@ -1,7 +1,7 @@
 [package]
 name = "dot-dodger"
 version = "0.1.0"
-authors = ["Your Name <victor_bankowski@hotmail.com>"]
+authors = ["Victor Bankowski <victor_bankowski@hotmail.com>"]
 edition = "2018"
 
 [dependencies]
