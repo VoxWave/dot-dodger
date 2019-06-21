@@ -2,6 +2,7 @@ use amethyst::assets::{AssetStorage, Loader};
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::prelude::*;
 
+use crate::bullet::BulletComponent;
 use crate::physics::{Acceleration, Position, Velocity};
 use crate::Tick;
 
@@ -14,5 +15,9 @@ impl SimpleState for DotDodger {
         let world = data.world;
         rendering::initialise_camera(world);
         world.add_resource(Tick(0));
+        world.register::<BulletComponent>();
+        //TODO:
+        // eli tänne nyt se spritesheetin lataus sillä renderissä olevalla funktiolla
+        // relevantti osuus pong tutoriaalista on 02 loppupäässä.
     }
 }
