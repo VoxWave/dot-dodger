@@ -5,11 +5,10 @@ use amethyst::{
     assets::Processor,
     prelude::*,
     renderer::{
-        types::DefaultBackend, Factory, Format, GraphBuilder, GraphCreator,
-        Kind, RenderGroupDesc, RenderingSystem, SpriteSheet, SubpassBuilder,
+        types::DefaultBackend, RenderingSystem, SpriteSheet,
     },
     utils::application_root_dir,
-    window::{ScreenDimensions, Window, WindowBundle},
+    window::WindowBundle,
 };
 
 use nalgebra as na;

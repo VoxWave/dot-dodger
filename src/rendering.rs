@@ -1,3 +1,16 @@
+use amethyst::{
+    ecs::{ReadExpect, Resources, SystemData, World},
+    renderer::{
+        pass::DrawFlat2DDesc, types::DefaultBackend, Factory, Format, GraphBuilder, GraphCreator,
+        Kind, RenderGroupDesc, SubpassBuilder,
+    },
+    window::{ScreenDimensions, Window},
+};
+
+pub fn initialise_camera(world: &mut World) {
+
+}
+
 // This graph structure is used for creating a proper `RenderGraph` for rendering.
 // A renderGraph can be thought of as the stages during a render pass. In our case,
 // we are only executing one subpass (DrawFlat2D, or the sprite pass). This graph
