@@ -68,7 +68,7 @@ impl GraphCreator<DefaultBackend> for ExampleGraph {
             1,
             surface_format,
             // clear screen to black
-            Some(ClearValue::Color([0.0, 0.0, 0.0, 1.0].into())),
+            Some(ClearValue::Color([0.0, 0.5, 0.0, 1.0].into())),
         );
 
         let depth = graph_builder.create_image(

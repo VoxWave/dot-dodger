@@ -30,7 +30,7 @@ pub struct Tick(u64);
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
     let app_root = application_root_dir()?;
-    let assets = app_root.join("assets");
+    let assets = app_root.join("assets/");
     let display_config_path = assets.join("configs").join("display_config.ron");
 
     let game_data = GameDataBuilder::default()
