@@ -45,6 +45,7 @@ fn main() -> amethyst::Result<()> {
         ));
 
     let mut game = Application::new(assets, DotDodger, game_data)?;
+    game.run();
 
     Ok(())
 }
