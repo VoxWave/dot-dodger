@@ -1,4 +1,4 @@
 (
   title: "dot-dodger",
-  dimensions: Some((1080, 1080)),
+  dimensions: Some((800, 600)),
 )

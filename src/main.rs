@@ -34,6 +34,8 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = assets.join("configs").join("display_config.ron");
 
     let game_data = GameDataBuilder::default()
+        .with(PhysicsSystem, "physics_system", &[])
+        .with(BulletPatternSystem, "bullet_pattern_system", &["physics_system"])
         .with_bundle(WindowBundle::from_config_path(display_config_path))?
         .with(
             Processor::<SpriteSheet>::new(),
