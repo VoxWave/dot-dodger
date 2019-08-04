@@ -36,15 +36,16 @@ fn main() -> amethyst::Result<()> {
     let game_data = GameDataBuilder::default()
         .with(PhysicsSystem, "physics_system", &[])
         .with(BulletPatternSystem, "bullet_pattern_system", &["physics_system"])
-        .with_bundle(WindowBundle::from_config_path(display_config_path))?
-        .with(
-            Processor::<SpriteSheet>::new(),
-            "sprite_sheet_processor",
-            &[],
-        )
-        .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(
-            ExampleGraph::default(),
-        ));
+        .with_bundle(
+            RenderingBundle::<DefaultBackend>::new()
+                // The RenderToWindow plugin provides all the scaffolding for opening a window and drawing on it
+                .with_plugin(
+                    RenderToWindow::from_config_path(display_config_path)
+                        .with_clear([0.0, 0.0, 0.0, 1.0]),
+                )
+                // RenderFlat2D plugin is used to render entities with a `SpriteRender` component.
+                .with_plugin(RenderFlat2D::default()),
+        )?;
 
     let mut game = Application::new(assets, DotDodger, game_data)?;
     game.run();
