@@ -2,18 +2,18 @@
 extern crate specs_derive;
 
 use amethyst::{
+    core::transform::TransformBundle,
     assets::Processor,
     prelude::*,
     renderer::{
-        types::DefaultBackend, RenderingSystem, SpriteSheet,
+        plugins::{RenderFlat2D, RenderToWindow},
+        types::DefaultBackend, RenderingBundle, SpriteSheet,
     },
     utils::application_root_dir,
     window::WindowBundle,
 };
 
 use nalgebra as na;
-
-use rendering::ExampleGraph;
 use bullet::BulletPatternSystem;
 use game::DotDodger;
 use physics::PhysicsSystem;
@@ -45,7 +45,8 @@ fn main() -> amethyst::Result<()> {
                 )
                 // RenderFlat2D plugin is used to render entities with a `SpriteRender` component.
                 .with_plugin(RenderFlat2D::default()),
-        )?;
+        )?
+        .with_bundle(TransformBundle::new())?;
 
     let mut game = Application::new(assets, DotDodger, game_data)?;
     game.run();

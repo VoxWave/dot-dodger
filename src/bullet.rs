@@ -1,5 +1,8 @@
-use amethyst::ecs::{
-    Builder, Component, Entities, Entity, LazyUpdate, NullStorage, Read, ReadExpect, System,
+use amethyst::{
+    core::transform::Transform,
+    ecs::{
+        Builder, Component, Entities, Entity, LazyUpdate, NullStorage, Read, ReadExpect, System,
+    },
 };
 use kolli_desu::shapes::Circle;
 
@@ -22,6 +25,9 @@ impl<'a> System<'a> for BulletPatternSystem {
         let mut t = cur_tick.0 as f64;
         t /= 100.;
         let rotation = Rotation2::new(t);
+        let mut transform = Transform::default();
+        transform.set_translation_xyz(200., 200., 0.);
+
         create_bullet(
             world.create_entity(&entities),
             Point2::new(200., 200.),
