@@ -1,8 +1,10 @@
 use amethyst::{
+    assets::{AssetStorage, Loader, Handle},
     core::transform::Transform,
     ecs::{
         Builder, Component, Entities, Entity, LazyUpdate, NullStorage, Read, ReadExpect, System,
     },
+    renderer::{SpriteSheet},
 };
 use kolli_desu::shapes::Circle;
 
@@ -10,13 +12,24 @@ use crate::Tick;
 // use crate::collision::Hitbox;
 use crate::na::{zero, Point2, Rotation2, Vector2};
 use crate::physics::{Acceleration, Position, Velocity};
-// use crate::rendering::Visual;
+use crate::rendering;;
 
 #[derive(Component, Debug, Default)]
 #[storage(NullStorage)]
 pub struct BulletComponent;
 
-pub struct BulletPatternSystem;
+pub struct BulletPatternSystem {
+    sprite: Handle<SpriteSheet>,
+};
+
+impl BulletPatternSystem {
+    pub fn new() -> Self {
+        let sprite_sheet_handle = rendering::load_sprite_sheet(world, "bullet");
+        BulletPatternSystem {
+            sprite: sprite_sheet_handle,
+        }
+    }
+}
 
 impl<'a> System<'a> for BulletPatternSystem {
     type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadExpect<'a, Tick>);
@@ -30,6 +43,7 @@ impl<'a> System<'a> for BulletPatternSystem {
 
         create_bullet(
             world.create_entity(&entities),
+            transform,
             Point2::new(200., 200.),
             rotation * Vector2::new(2., 2.),
             zero(),
@@ -41,6 +55,7 @@ impl<'a> System<'a> for BulletPatternSystem {
 
 fn create_bullet(
     builder: impl Builder,
+    trans: Transform,
     pos: Point2<f64>,
     vel: Vector2<f64>,
     acc: Vector2<f64>,
@@ -49,6 +64,7 @@ fn create_bullet(
     builder
         // .with(Visual::Circle([1., 0., 0., 1.], rad))
         // .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))
+        .with(trans)
         .with(Position(pos))
         .with(Velocity(vel))
         .with(Acceleration(acc))

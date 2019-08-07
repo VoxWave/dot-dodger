@@ -35,7 +35,7 @@ fn main() -> amethyst::Result<()> {
 
     let game_data = GameDataBuilder::default()
         .with(PhysicsSystem, "physics_system", &[])
-        .with(BulletPatternSystem, "bullet_pattern_system", &["physics_system"])
+        .with(BulletPatternSystem::new(), "bullet_pattern_system", &["physics_system"])
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
                 // The RenderToWindow plugin provides all the scaffolding for opening a window and drawing on it
