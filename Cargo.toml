@@ -7,7 +7,6 @@ edition = "2018"
 [dependencies]
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
 specs-derive = "0.3"
-nalgebra = "0.14"
 modulator = "0.1.0"
 
 [dependencies.amethyst]

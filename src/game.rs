@@ -14,6 +14,7 @@ impl SimpleState for DotDodger {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
         rendering::initialise_camera(world);
+        rendering::load_texture("bullet.png", world);
 
         world.add_resource(Tick(0));
         world.register::<BulletComponent>();

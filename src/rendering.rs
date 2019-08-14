@@ -25,24 +25,15 @@ pub fn initialise_camera(world: &mut World) {
         .build();
 }
 
-pub fn load_sprite_sheet(world: &mut World, texture_name: &str) -> Handle<SpriteSheet> {
-    let texture_handle = {
-        let loader = world.read_resource::<Loader>();
-        let texture_storage = world.read_resource::<AssetStorage<Texture>>();
-        loader.load(
-            format!("{}{}", texture_name, ".png"),
-            ImageFormat::default(),
-            (),
-            &texture_storage,
-        )
-    };
-
+pub fn load_texture<N>(name: N, world: &World) -> Handle<Texture>
+where
+    N: Into<String>,
+{
     let loader = world.read_resource::<Loader>();
-    let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
     loader.load(
-        format!("{}{}", texture_name, "_spritesheet.ron"),
-        SpriteSheetFormat(texture_handle),
+        name,
+        ImageFormat::default(),
         (),
-        &sprite_sheet_store,
+        &world.read_resource::<AssetStorage<Texture>>(),
     )
 }

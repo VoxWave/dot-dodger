@@ -1,6 +1,9 @@
 use amethyst::{
     assets::{AssetStorage, Loader, Handle},
-    core::transform::Transform,
+    core::{
+        math::{zero, Point2, Rotation2, Vector2},
+        transform::Transform,
+    },
     ecs::{
         Builder, Component, Entities, Entity, LazyUpdate, NullStorage, Read, ReadExpect, System,
     },
@@ -10,26 +13,14 @@ use kolli_desu::shapes::Circle;
 
 use crate::Tick;
 // use crate::collision::Hitbox;
-use crate::na::{zero, Point2, Rotation2, Vector2};
 use crate::physics::{Acceleration, Position, Velocity};
-use crate::rendering;;
+use crate::rendering;
 
 #[derive(Component, Debug, Default)]
 #[storage(NullStorage)]
 pub struct BulletComponent;
 
-pub struct BulletPatternSystem {
-    sprite: Handle<SpriteSheet>,
-};
-
-impl BulletPatternSystem {
-    pub fn new() -> Self {
-        let sprite_sheet_handle = rendering::load_sprite_sheet(world, "bullet");
-        BulletPatternSystem {
-            sprite: sprite_sheet_handle,
-        }
-    }
-}
+pub struct BulletPatternSystem;
 
 impl<'a> System<'a> for BulletPatternSystem {
     type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadExpect<'a, Tick>);
