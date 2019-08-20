@@ -10,19 +10,32 @@ use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
 use std::path::Path;
 
+use specs::{DispatcherBuilder, World};
+
+use ggez::{
+    graphics,
+    Context,
+    ContextBuilder,
+    GameResult,
+    event::{
+        self,
+        EventHandler
+    }
+};
+
 use crate::bullet::{BulletComponent, BulletPatternSystem};
 use crate::collision::CollisionSystem;
 use crate::collision::Hitbox;
+use crate::game::DotDodger;
 use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
 use crate::player::{PlayerControlSystem, PlayerHandle};
 use crate::rendering::{render, Visual};
-use piston_window::*;
-use specs::{DispatcherBuilder, World};
 
 use crate::na::{zero, Point2};
 
 mod bullet;
 mod collision;
+mod game;
 mod physics;
 mod player;
 mod rendering;
@@ -49,20 +62,16 @@ fn main() {
         .with(CollisionSystem, "collision_system", &["physics_system"])
         .build();
 
-    let mut window: PistonWindow = WindowSettings::new("dot-dodger", (640, 480))
-        .exit_on_esc(true)
-        .vsync(false)
+    let (mut ctx, mut event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
         .build()
-        .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
+        .expect("Failed to create a ggez context!");
 
-    let ref settings = TextureSettings::new();
+    let mut dot_dodger = DotDodger::new(&mut ctx);
 
-    let player_texture = Texture::from_path(
-        &mut *window.factory.borrow_mut(), 
-        Path::new("assets/ship_alternative.png"), 
-        Flip::None, 
-        settings,
-    ).unwrap();
+    match event::run(&mut ctx, &mut event_loop, &mut dot_dodger) {
+        Ok(_) => println!("Exited cleanly."),
+        Err(e) => println!("An error occured: {}", e),
+    }
 
     let player = world
         .create_entity()
