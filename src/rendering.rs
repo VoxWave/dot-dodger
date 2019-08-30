@@ -12,8 +12,7 @@ pub enum Visual {
 }
 
 pub fn render(
-    c: Context,
-    g: &mut G2d,
+    c: &mut Context,
     (positions, visuals): (ReadStorage<Position>, ReadStorage<Visual>),
 ) {
     let [width, height] = c.viewport.unwrap().draw_size;

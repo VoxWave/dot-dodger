@@ -45,23 +45,6 @@ const FRAME: Duration = Duration::from_millis(1000 / 60);
 pub struct Tick(u64);
 
 fn main() {
-    let mut world = World::new();
-    world.register::<Position>();
-    world.register::<Velocity>();
-    world.register::<Hitbox>();
-    world.register::<Acceleration>();
-    world.register::<BulletComponent>();
-    world.register::<Visual>();
-
-    let (send, recv) = channel();
-
-    let mut dispatcher = DispatcherBuilder::new()
-        .with(PlayerControlSystem::new(recv), "player_control_system", &[])
-        .with(BulletPatternSystem, "bullet_pattern_system", &[])
-        .with(PhysicsSystem, "physics_system", &["player_control_system"])
-        .with(CollisionSystem, "collision_system", &["physics_system"])
-        .build();
-
     let (mut ctx, mut event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
         .build()
         .expect("Failed to create a ggez context!");
@@ -93,9 +76,6 @@ fn main() {
             _ => {
                 window.draw_2d(&e, |c, g| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
-                    &mut world.exec(|s| {
-                        render(c, g, s);
-                    });
                 });
             }
         }
