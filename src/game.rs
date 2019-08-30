@@ -1,18 +1,32 @@
+use std::time::Instant;
+
 use ggez::{
     Context, GameResult, graphics,
     event::{self, EventHandler},
 };
 
-use specs::{World, Dispatcher};
+use specs::{
+        world::{
+            Builder,
+        },
+        World, 
+        Dispatcher, 
+        DispatcherBuilder,
+    };
+
+use crate::na::{zero, Point2};
 
 use crate::bullet::{BulletComponent, BulletPatternSystem};
 use crate::collision::{CollisionSystem, Hitbox};
+use crate::FRAME;
 use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
 use crate::rendering::{render, Visual};
 
 pub struct DotDodger<'a, 'b> {
     world: World,
     dispatcher: Dispatcher<'a, 'b>,
+    player: Entity,
+    last_tick: Instant,
 }
 
 impl<'a, 'b> DotDodger<'a, 'b> {
@@ -33,15 +47,35 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             .with(PhysicsSystem, "physics_system", &["player_control_system"])
             .with(CollisionSystem, "collision_system", &["physics_system"])
             .build();
+
+        let player = world
+        .create_entity()
+        .with(Position(Point2::new(200., 200.)))
+        .with(Velocity(zero()))
+        .with(Acceleration(zero()))
+        .with(Hitbox::Point(Point2::new(0., 0.)))
+        .with(Visual::Circle([1., 0., 0., 1.],10.))
+        // .with(Visual::Sprite(player_texture))
+        .build();
+        world.add_resource(PlayerHandle(player));
+        world.add_resource(Tick(0));
         DotDodger {
             world,
-            dispatcher
+            dispatcher,
+            player,
+            last_tick: Instant::now(),
         }
     }
 }
 
-impl EventHandler for DotDodger {
+impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
     fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
+        if instant.elapsed() >= FRAME {
+            self.dispatcher.dispatch(&mut world.res);
+            self.world.maintain();
+            self.world.write_resource::<Tick>().0 += 1;
+            self.last_tick = Instant::now();
+        }
         Ok(())
     }
 

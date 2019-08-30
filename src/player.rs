@@ -71,7 +71,7 @@ impl<'a> System<'a> for PlayerControlSystem {
     fn run(&mut self, (player, mut velocities): Self::SystemData) {
         self.handle_inputs();
         let player_vel = velocities.get_mut(player.0).unwrap();
-        let mut new_vel = zero::<Vector2<f32>>();
+        let mut new_vel = zero::<Vector2<f64>>();
         let pressed_buttons: HashSet<&Direction> = self
             .button_states
             .iter()

@@ -29,9 +29,9 @@ impl Shape for Hitbox {
     fn farthest_in_dir(&self, dir: Vector2<f32>) -> Vector2<f32> {
         use self::Hitbox::*;
         match self {
-            Circle(c) => c.farthest_in_dir(dir),
-            ConvexPolygon(cp) => cp.farthest_in_dir(dir),
-            Point(p) => p.farthest_in_dir(dir),
+            Circle(c) => (c as Vector2<f32>).farthest_in_dir(dir),
+            ConvexPolygon(cp) => cp as Vector2<f32>.farthest_in_dir(dir),
+            Point(p) => (p as Vector2<f32>).farthest_in_dir(dir),
         }
     }
 }
@@ -53,7 +53,7 @@ impl<'a> System<'a> for CollisionSystem {
         );
         let collision = (&hitboxes, &positions, &bullets)
             .par_join()
-            .find_any(|(hitbox, position, _)| collides((*hitbox, position.0), (p_hitbox, p_pos.0)));
+            .find_any(|(hitbox, position, _)| collides((*hitbox, (position.0 as Vector2<f32>)), (p_hitbox, (p_pos.0 as Vector2<f32>))));
         if let Some(_) = collision {
             handle_death();
         }
