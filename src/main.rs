@@ -39,6 +39,7 @@ mod game;
 mod physics;
 mod player;
 mod rendering;
+mod utils;
 
 const FRAME: Duration = Duration::from_millis(1000 / 60);
 

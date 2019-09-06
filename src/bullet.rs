@@ -6,6 +6,7 @@ use crate::collision::Hitbox;
 use crate::na::{zero, Point2, Vector2, Rotation2};
 use crate::physics::{Acceleration, Position, Velocity};
 use crate::rendering::Visual;
+use crate::utils::upcast_vector;
 
 #[derive(Component, Debug, Default)]
 #[storage(NullStorage)]
@@ -20,11 +21,11 @@ impl<'a> System<'a> for BulletPatternSystem {
         let mut t = cur_tick.0 as f32;
         t /= 100.;
         let rotation = Rotation2::new(t);
-        create_bullet(world.create_entity(&entities), Point2::new(200., 200.), rotation * Vector2::new(2., 2.), zero(), 5.);
+        create_bullet(world.create_entity(&entities), Point2::new(200., 200.), upcast_vector(rotation * Vector2::new(2., 2.)), zero(), 5.);
     }
 }
 
-fn create_bullet(builder: impl Builder, pos: Point2<f32>, vel: Vector2<f32>, acc: Vector2<f32>, rad: f64) -> Entity {
+fn create_bullet(builder: impl Builder, pos: Point2<f64>, vel: Vector2<f64>, acc: Vector2<f64>, rad: f64) -> Entity {
         builder
             .with(Visual::Circle([1., 0., 0., 1.], rad))
             .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))

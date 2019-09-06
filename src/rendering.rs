@@ -6,7 +6,7 @@ use crate::rendering::Visual::*;
 #[derive(Component)]
 pub enum Visual {
     Circle([f32; 4], f64),
-    Sprite(<G2d<'static> as Graphics>::Texture),
+    Sprite(()),
 }
 
 pub fn render(

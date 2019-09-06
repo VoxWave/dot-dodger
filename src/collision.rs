@@ -1,3 +1,5 @@
+use std::convert::Into;
+
 use crate::na::{Point2, Vector2};
 use kolli_desu::gjk::collides;
 use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
@@ -8,6 +10,7 @@ use crate::bullet::BulletComponent;
 use crate::handle_death;
 use crate::physics::Position;
 use crate::player::PlayerHandle;
+use crate::utils::{downcast_point, downcast_vector};
 
 #[derive(Component, Debug)]
 pub enum Hitbox {
@@ -29,9 +32,9 @@ impl Shape for Hitbox {
     fn farthest_in_dir(&self, dir: Vector2<f32>) -> Vector2<f32> {
         use self::Hitbox::*;
         match self {
-            Circle(c) => (c as Vector2<f32>).farthest_in_dir(dir),
-            ConvexPolygon(cp) => cp as Vector2<f32>.farthest_in_dir(dir),
-            Point(p) => (p as Vector2<f32>).farthest_in_dir(dir),
+            Circle(c) => c.farthest_in_dir(dir),
+            ConvexPolygon(cp) => cp.farthest_in_dir(dir),
+            Point(p) => p.farthest_in_dir(dir),
         }
     }
 }
@@ -53,7 +56,7 @@ impl<'a> System<'a> for CollisionSystem {
         );
         let collision = (&hitboxes, &positions, &bullets)
             .par_join()
-            .find_any(|(hitbox, position, _)| collides((*hitbox, (position.0 as Vector2<f32>)), (p_hitbox, (p_pos.0 as Vector2<f32>))));
+            .find_any(|(hitbox, position, _)| collides((*hitbox, downcast_point(position.0)), (p_hitbox, downcast_point(p_pos.0))));
         if let Some(_) = collision {
             handle_death();
         }
