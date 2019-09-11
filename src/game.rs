@@ -1,4 +1,6 @@
 use std::time::Instant;
+use std::sync::mpsc::channel;
+
 
 use ggez::{
     Context, GameResult, graphics,
@@ -12,6 +14,7 @@ use specs::{
         World, 
         Dispatcher, 
         DispatcherBuilder,
+        Entity,
     };
 
 use crate::na::{zero, Point2};
@@ -21,6 +24,8 @@ use crate::collision::{CollisionSystem, Hitbox};
 use crate::FRAME;
 use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
 use crate::rendering::{render, Visual};
+use crate::Tick;
+use crate::player::{PlayerHandle, PlayerControlSystem};
 
 pub struct DotDodger<'a, 'b> {
     world: World,
@@ -70,8 +75,8 @@ impl<'a, 'b> DotDodger<'a, 'b> {
 
 impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
     fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
-        if instant.elapsed() >= FRAME {
-            self.dispatcher.dispatch(&mut world.res);
+        if self.last_tick.elapsed() >= FRAME {
+            self.dispatcher.dispatch(&self.world.res);
             self.world.maintain();
             self.world.write_resource::<Tick>().0 += 1;
             self.last_tick = Instant::now();

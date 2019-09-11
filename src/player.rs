@@ -1,5 +1,4 @@
-use piston_window::keyboard::Key;
-use piston_window::{Button, Input};
+
 use std::collections::{HashMap, HashSet};
 use std::sync::mpsc::Receiver;
 
@@ -19,24 +18,24 @@ pub enum Direction {
 pub struct PlayerHandle(pub Entity);
 
 pub struct PlayerControlSystem {
-    button_map: HashMap<Button, Direction>,
-    button_states: HashSet<Button>,
-    input_channel: Receiver<Input>,
+    button_map: HashMap<(), Direction>,
+    button_states: HashSet<()>,
+    input_channel: Receiver<()>,
 }
 
 impl PlayerControlSystem {
-    pub fn new(input_channel: Receiver<Input>) -> Self {
+    pub fn new(input_channel: Receiver<()>) -> Self {
         let button_states = HashSet::new();
         let mut button_map = HashMap::new();
         //TODO: make this configurable and not hardcoded.
-        button_map.insert(Button::Keyboard(Key::W), Direction::Up);
-        button_map.insert(Button::Keyboard(Key::A), Direction::Left);
-        button_map.insert(Button::Keyboard(Key::S), Direction::Down);
-        button_map.insert(Button::Keyboard(Key::D), Direction::Right);
-        button_map.insert(Button::Keyboard(Key::Up), Direction::Up);
-        button_map.insert(Button::Keyboard(Key::Left), Direction::Left);
-        button_map.insert(Button::Keyboard(Key::Down), Direction::Down);
-        button_map.insert(Button::Keyboard(Key::Right), Direction::Right);
+        // button_map.insert(Button::Keyboard(Key::W), Direction::Up);
+        // button_map.insert(Button::Keyboard(Key::A), Direction::Left);
+        // button_map.insert(Button::Keyboard(Key::S), Direction::Down);
+        // button_map.insert(Button::Keyboard(Key::D), Direction::Right);
+        // button_map.insert(Button::Keyboard(Key::Up), Direction::Up);
+        // button_map.insert(Button::Keyboard(Key::Left), Direction::Left);
+        // button_map.insert(Button::Keyboard(Key::Down), Direction::Down);
+        // button_map.insert(Button::Keyboard(Key::Right), Direction::Right);
 
         PlayerControlSystem {
             button_map,
@@ -46,21 +45,8 @@ impl PlayerControlSystem {
     }
 
     fn handle_inputs(&mut self) {
-        use piston_window::ButtonState::*;
         for input in self.input_channel.try_iter() {
-            match input {
-                Input::Button(bs) => match bs.state {
-                    Press => {
-                        println!("press");
-                        self.button_states.insert(bs.button);
-                    }
-                    Release => {
-                        println!("release");
-                        self.button_states.remove(&bs.button);
-                    }
-                },
-                _ => {}
-            }
+            
         }
     }
 }
