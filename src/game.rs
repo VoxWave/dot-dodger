@@ -4,7 +4,7 @@ use ggez::{
     event::{self, EventHandler},
     graphics, Context, GameResult,
 };
-use specs::{Builder, Dispatcher, DispatcherBuilder, World};
+use specs::{Builder, Dispatcher, DispatcherBuilder, World, prelude::WorldExt};
 
 use crate::{
     bullet::{BulletComponent, BulletPatternSystem},
@@ -40,8 +40,8 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             )
             .with(CollisionSystem, "collision_system", &["physics_system"])
             .build();
-        dispatcher.setup(&mut world.res);
-        world.add_resource(Tick(0));
+        dispatcher.setup(&mut world);
+        world.insert(Tick(0));
 
         world
             .create_entity()
@@ -66,7 +66,7 @@ impl<'a, 'b> DotDodger<'a, 'b> {
 impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         if self.last_tick.elapsed() >= FRAME {
-            self.dispatcher.dispatch(&self.world.res);
+            self.dispatcher.dispatch(&self.world);
             self.world.maintain();
             self.world.write_resource::<Tick>().0 += 1;
             self.last_tick = Instant::now();

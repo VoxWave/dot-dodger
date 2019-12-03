@@ -1,14 +1,14 @@
 [package]
 name = "dot-dodger"
 version = "0.1.0"
-authors = ["Your Name <victor_bankowski@hotmail.com>"]
+authors = ["Victor Bankowski <victor_bankowski@hotmail.com>"]
 edition = "2018"
 
 [dependencies]
 clap = "2.33"
 ggez = "0.5"
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
-specs = "0.14"
+specs = "0.15"
 specs-derive = "0.3"
 nalgebra = "0.17.2"
 modulator = "0.1.0"

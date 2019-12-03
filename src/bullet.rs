@@ -23,10 +23,9 @@ impl<'a> System<'a> for BulletPatternSystem {
         Entities<'a>,
         Read<'a, LazyUpdate>,
         ReadExpect<'a, Tick>,
-        Option<Write<'a, NewBullets>>,
     );
 
-    fn run(&mut self, (entities, world, cur_tick, mut new_bullets): Self::SystemData) {
+    fn run(&mut self, (entities, world, cur_tick): Self::SystemData) {
         let mut t = cur_tick.0 as f32;
         if t.rem_euclid(5.) == 0. {
             t /= 10.;
@@ -38,10 +37,6 @@ impl<'a> System<'a> for BulletPatternSystem {
                 zero(),
                 5.,
             );
-            match new_bullets {
-                Some(mut new_bullets) => new_bullets.0.push(bullet),
-                None => {}
-            };
         }
     }
 }
