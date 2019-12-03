@@ -49,22 +49,45 @@ impl PlayerControlSystem {
         }
     }
 
-    pub fn drain_messages(&mut self) {
-
+    pub fn drain_messages<'a>(&mut self, player_inputs: &mut WriteStorage<'a, PlayerInputState>) {
+        use PCSMessage::*;
+        for message in self.message_channel.try_iter() {
+            match message {
+                NewPlayer(entity) => self.players.push(entity),
+                Input(player_id, x, y) => {
+                    if let Some(player_input) = self.players.get(player_id as usize).and_then(|entity| player_inputs.get_mut(*entity)) {
+                        player_input.0 = x;
+                        player_input.1 = y;
+                    }
+                },
+            }
+        }
     }
 }
 
 impl<'a> System<'a> for PlayerControlSystem {
     type SystemData = (
-        ReadStorage<'a, PlayerInputState>,
+        WriteStorage<'a, PlayerInputState>,
         WriteStorage<'a, Velocity>,
     );
 
-    fn run(&mut self, (players, mut velocities): Self::SystemData) {
-        self.drain_messages();
-        (&players, &mut velocities).join().for_each(|(_, velocity)| {
-            if velocity.0 == zero() {
-                velocity.0 += Vector2::new(1., 1.);
+    fn run(&mut self, (mut players, mut velocities): Self::SystemData) {
+        self.drain_messages(&mut players);
+        (&players, &mut velocities).join().for_each(|(player_input, velocity)| {
+            let new_velocity = match player_input {
+                PlayerInputState(x, y) => {
+                    let state_to_float = |x| match x {
+                        &AxisState::Positive => 1.,
+                        &AxisState::Neutral => 0.,
+                        &AxisState::Negative => -1.,
+                    };
+                    Vector2::new(state_to_float(x), state_to_float(y))
+                },
+            };
+            if new_velocity == zero() {
+                velocity.0 = new_velocity
+            } else {
+                velocity.0 = new_velocity.normalize()
             }
         });
         // let mut new_vel = zero::<Vector2<f64>>();

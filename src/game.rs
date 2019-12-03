@@ -1,8 +1,9 @@
-use std::{sync::mpsc::channel, time::Instant};
+use std::{sync::mpsc::{channel, Sender}, time::Instant};
 
 use ggez::{
     event::{self, EventHandler},
     graphics, Context, GameResult,
+    input::keyboard::{KeyCode, KeyMods},
 };
 use specs::{Builder, Dispatcher, DispatcherBuilder, World, prelude::WorldExt};
 
@@ -10,9 +11,8 @@ use crate::{
     bullet::{BulletComponent, BulletPatternSystem},
     collision::{CollisionSystem, Hitbox},
     physics::{Acceleration, PhysicsSystem, Position, Velocity},
-    player::{AxisState, PlayerControlSystem, PlayerInputState},
-    rendering::Renderer,
-    rendering::Visual,
+    player::{AxisState, PlayerControlSystem, PlayerInputState, PCSMessage},
+    rendering::{Renderer, Visual},
     Tick, FRAME, na::{Vector2, Point2},
 };
 
@@ -21,6 +21,8 @@ pub struct DotDodger<'a, 'b> {
     dispatcher: Dispatcher<'a, 'b>,
     renderer: Renderer,
     last_tick: Instant,
+    input_channel: Sender<PCSMessage>,
+    //raw_inputs: Vec<Input>,
 }
 
 impl<'a, 'b> DotDodger<'a, 'b> {
@@ -43,7 +45,7 @@ impl<'a, 'b> DotDodger<'a, 'b> {
         dispatcher.setup(&mut world);
         world.insert(Tick(0));
 
-        world
+        let player1 = world
             .create_entity()
             .with(PlayerInputState(AxisState::Neutral, AxisState::Neutral))
             .with(Position(Point2::new(0., 0.)))
@@ -52,6 +54,8 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             .with(Visual::Sprite("player".to_string()))
             .build();
 
+        send.send(PCSMessage::NewPlayer(player1));
+
         let renderer = Renderer::new(ctx);
 
         DotDodger {
@@ -59,13 +63,19 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             dispatcher,
             renderer,
             last_tick: Instant::now(),
+            input_channel: send,
         }
+    }
+
+    fn handle_input(&mut self) {
+        self.input_channel.send(PCSMessage::Input(0, AxisState::Positive, AxisState::Positive));
     }
 }
 
 impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         if self.last_tick.elapsed() >= FRAME {
+            self.handle_input();
             self.dispatcher.dispatch(&self.world);
             self.world.maintain();
             self.world.write_resource::<Tick>().0 += 1;
@@ -81,5 +91,11 @@ impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
             renderer.render(ctx, s);
         });
         graphics::present(ctx)
+    }
+
+    fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, repeat: bool) {
+        if !repeat {
+
+        }
     }
 }
