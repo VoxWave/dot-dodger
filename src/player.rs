@@ -1,19 +1,14 @@
 use std::collections::{HashMap, HashSet};
 use std::sync::mpsc::Receiver;
 
-use crate::na::{zero, Vector2};
+use crate::{
+    na::{zero, Vector2},
+    physics::Velocity,
+    input::{LogicalInput, Axis, AxisState},
+};
 
-use crate::physics::Velocity;
 use specs::{Component, Entity, Join, ReadStorage, System, VecStorage, WriteStorage};
 
-#[derive(Eq, Hash, PartialEq, Debug)]
-pub enum AxisState {
-    //left and down
-    Negative,
-    Neutral,
-    //right and up
-    Positive,
-}
 //x and y input values
 #[derive(Component)]
 #[storage(VecStorage)]
@@ -21,7 +16,7 @@ pub struct PlayerInputState(pub AxisState, pub AxisState);
 
 pub enum PCSMessage {
     NewPlayer(Entity),
-    Input(u64, AxisState, AxisState)
+    Input(u64, LogicalInput),
 }
 
 pub struct PlayerControlSystem {
@@ -54,12 +49,15 @@ impl PlayerControlSystem {
         for message in self.message_channel.try_iter() {
             match message {
                 NewPlayer(entity) => self.players.push(entity),
-                Input(player_id, x, y) => {
+                Input(player_id, LogicalInput::Axis(axis, state)) => {
                     if let Some(player_input) = self.players.get(player_id as usize).and_then(|entity| player_inputs.get_mut(*entity)) {
-                        player_input.0 = x;
-                        player_input.1 = y;
+                        match axis {
+                            Axis::X => player_input.0 = state,
+                            Axis::Y => player_input.1 = state,
+                        }
                     }
                 },
+                _ => {},
             }
         }
     }

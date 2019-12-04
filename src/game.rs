@@ -11,8 +11,9 @@ use crate::{
     bullet::{BulletComponent, BulletPatternSystem},
     collision::{CollisionSystem, Hitbox},
     physics::{Acceleration, PhysicsSystem, Position, Velocity},
-    player::{AxisState, PlayerControlSystem, PlayerInputState, PCSMessage},
+    player::{PlayerControlSystem, PlayerInputState, PCSMessage},
     rendering::{Renderer, Visual},
+    input::{AxisState, Axis, InputConfig, RawInput},
     Tick, FRAME, na::{Vector2, Point2},
 };
 
@@ -22,7 +23,8 @@ pub struct DotDodger<'a, 'b> {
     renderer: Renderer,
     last_tick: Instant,
     input_channel: Sender<PCSMessage>,
-    //raw_inputs: Vec<Input>,
+    raw_inputs: Vec<RawInput>,
+    input_config: InputConfig,
 }
 
 impl<'a, 'b> DotDodger<'a, 'b> {
@@ -64,11 +66,17 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             renderer,
             last_tick: Instant::now(),
             input_channel: send,
+            raw_inputs: Vec::new(),
+            input_config: InputConfig::new(),
         }
     }
 
     fn handle_input(&mut self) {
-        self.input_channel.send(PCSMessage::Input(0, AxisState::Positive, AxisState::Positive));
+        for raw_input in self.raw_inputs.drain(..) {
+            // if let Some(input) = self.input_config.get_input(raw_input) {
+            //     self.input_channel.send(input);
+            // }
+        }
     }
 }
 
@@ -95,7 +103,7 @@ impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
 
     fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, repeat: bool) {
         if !repeat {
-
+            
         }
     }
 }
