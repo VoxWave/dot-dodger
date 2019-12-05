@@ -23,8 +23,7 @@ pub struct DotDodger<'a, 'b> {
     renderer: Renderer,
     last_tick: Instant,
     input_channel: Sender<PCSMessage>,
-    raw_inputs: Vec<RawInput>,
-    input_config: InputConfig,
+    input_handler: InputHandler,
 }
 
 impl<'a, 'b> DotDodger<'a, 'b> {
@@ -67,15 +66,13 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             last_tick: Instant::now(),
             input_channel: send,
             raw_inputs: Vec::new(),
-            input_config: InputConfig::new(),
+            input_handler: InputHandler::new(),
         }
     }
 
     fn handle_input(&mut self) {
         for raw_input in self.raw_inputs.drain(..) {
-            // if let Some(input) = self.input_config.get_input(raw_input) {
-            //     self.input_channel.send(input);
-            // }
+            self.input_handler.set_input(raw_input)
         }
     }
 }
@@ -103,7 +100,11 @@ impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
 
     fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, repeat: bool) {
         if !repeat {
-            
+            self.raw_inputs.push(keycode);
         }
+    }
+
+    fn key_up_event(&mut self, ctx: &mut Context, keycode:) {
+
     }
 }
