@@ -14,7 +14,7 @@ use crate::rendering::Visual::*;
 #[derive(Component)]
 pub enum Visual {
     Circle([f32; 4], f64),
-    Sprite(String),
+    Sprite(String, f32),
 }
 
 pub struct Renderer {
@@ -37,26 +37,31 @@ impl Renderer {
         ctx: &mut Context,
         (positions, visuals): (ReadStorage<Position>, ReadStorage<Visual>),
     ) {
-        let mut bullet_batch = SpriteBatch::new(self.sprites.get("bullet").unwrap().clone());
+        let bullet_sprite = self.sprites.get("bullet").unwrap().clone();
+        let bullet_offset_x = (bullet_sprite.width() as f32) / 2.;
+        let bullet_offset_y = (bullet_sprite.height() as f32) / 2.;
+        let mut bullet_batch = SpriteBatch::new(bullet_sprite);
         (&positions, &visuals).join().for_each(|(pos, vis)| {
             let screen_rect = ggez::graphics::screen_coordinates(ctx);
             let x = (pos.0.x + (screen_rect.w as f64) / 2.) as f32;
             let y = (-pos.0.y + (screen_rect.h as f64) / 2.) as f32;
             match vis {
                 Circle(color, radius) => {}
-                Sprite(img) => {
+                Sprite(img, scale) => {
                     match img.as_ref() {
                         "bullet" => {
-                            bullet_batch.add(DrawParam::default().dest([x, y]));
+                            bullet_batch.add(DrawParam::default().scale([*scale, *scale]).dest([x - scale*bullet_offset_x, y - scale*bullet_offset_y]));
                         }
                         _ => {
                             let sprite = self.sprites.get(img).unwrap();
-                            draw(ctx, sprite, DrawParam::default().dest([x, y]));
+                            let sprite_offset_x = (sprite.width() as f32) / 2.;
+                            let sprite_offset_y = (sprite.height() as f32) / 2.;
+                            draw(ctx, sprite, DrawParam::default().scale([*scale, *scale]).dest([x - scale*sprite_offset_x, y - scale*sprite_offset_y])).unwrap();
                         }
                     };
                 }
             }
         });
-        draw(ctx, &bullet_batch, DrawParam::default());
+        draw(ctx, &bullet_batch, DrawParam::default()).unwrap();
     }
 }

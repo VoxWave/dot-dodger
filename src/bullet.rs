@@ -29,9 +29,9 @@ impl<'a> System<'a> for BulletPatternSystem {
             let bullet = create_bullet(
                 world.create_entity(&entities),
                 Point2::new(200., 200.),
-                upcast_vector(rotation * Vector2::new(2., 2.)),
+                Vector2::new(0., 0.),//upcast_vector(rotation * Vector2::new(2., 2.)),
                 zero(),
-                5.,
+                64./2.,
             );
         }
     }
@@ -45,7 +45,7 @@ pub fn create_bullet(
     rad: f64,
 ) -> Entity {
     builder
-        .with(Visual::Sprite("bullet".to_string()))
+        .with(Visual::Sprite("bullet".to_string(), 1.))
         .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))
         .with(Position(pos))
         .with(Velocity(vel))

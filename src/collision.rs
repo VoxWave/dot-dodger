@@ -5,7 +5,7 @@ use crate::na::{Point2, Vector2};
 use kolli_desu::gjk::collides;
 use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
 use specs::prelude::ParallelIterator;
-use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System};
+use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, System, Join};
 
 use crate::bullet::BulletComponent;
 use crate::handle_death;
@@ -50,21 +50,21 @@ impl<'a> System<'a> for CollisionSystem {
     );
 
     fn run(&mut self, (player, hitboxes, positions, bullets): Self::SystemData) {
-        // let (p_hitbox, p_pos) = (
-        //     hitboxes.get(player.0).unwrap(),
-        //     positions.get(player.0).unwrap(),
-        // );
-        // let collision =
-        //     (&hitboxes, &positions, &bullets)
-        //         .par_join()
-        //         .find_any(|(hitbox, position, _)| {
-        //             collides(
-        //                 (*hitbox, downcast_point(position.0)),
-        //                 (p_hitbox, downcast_point(p_pos.0)),
-        //             )
-        //         });
-        // if let Some(_) = collision {
-        //     handle_death();
-        // }
+        for (_, p_hitbox, p_pos) in (&player, &hitboxes, &positions).join() {
+            let collision =
+            (&hitboxes, &positions, &bullets)
+                .par_join()
+                .find_any(|(hitbox, position, _)| {
+                    collides(
+                        (*hitbox, downcast_point(position.0)),
+                        (p_hitbox, downcast_point(p_pos.0)),
+                    )
+                });
+            if let Some(_) = collision {
+                handle_death();
+            } else {
+                println!("dedness not happend");
+            }
+        }
     }
 }

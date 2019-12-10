@@ -3,6 +3,8 @@ use std::{
     time::Instant,
 };
 
+use kolli_desu::shapes::Circle;
+
 use ggez::{
     event::{self, EventHandler},
     graphics,
@@ -57,10 +59,11 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             .with(Position(Point2::new(0., 0.)))
             .with(Velocity(Vector2::new(0., 0.)))
             .with(Acceleration(Vector2::new(0., 0.)))
-            .with(Visual::Sprite("player".to_string()))
+            .with(Visual::Sprite("player".to_string(), 10.))
+            .with(Hitbox::Point(Point2::new(0., 0.)))
             .build();
 
-        send.send(PCSMessage::NewPlayer(player1));
+        send.send(PCSMessage::NewPlayer(player1)).unwrap();
 
         let renderer = Renderer::new(ctx);
 
@@ -76,7 +79,7 @@ impl<'a, 'b> DotDodger<'a, 'b> {
 
     fn handle_input(&mut self) {
         for (player_id, input) in self.input_handler.get_inputs() {
-            self.input_channel.send(PCSMessage::Input(player_id, input));
+            self.input_channel.send(PCSMessage::Input(player_id, input)).unwrap();
         }
     }
 }
