@@ -1,5 +1,8 @@
 use crate::na::{Point2, Vector2};
-use specs::{WriteStorage, ReadStorage, Component, System, VecStorage, DenseVecStorage, prelude::{ParJoin, ParallelIterator}};
+use specs::{
+    prelude::{ParJoin, ParallelIterator},
+    Component, DenseVecStorage, ReadStorage, System, VecStorage, WriteStorage,
+};
 
 #[derive(Debug, Component)]
 #[storage(VecStorage)]

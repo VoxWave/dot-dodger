@@ -40,8 +40,8 @@ impl Renderer {
         let mut bullet_batch = SpriteBatch::new(self.sprites.get("bullet").unwrap().clone());
         (&positions, &visuals).join().for_each(|(pos, vis)| {
             let screen_rect = ggez::graphics::screen_coordinates(ctx);
-            let x = (pos.0.x + (screen_rect.w as f64)/2.) as f32;
-            let y = (-pos.0.y + (screen_rect.h as f64)/2.) as f32;
+            let x = (pos.0.x + (screen_rect.w as f64) / 2.) as f32;
+            let y = (-pos.0.y + (screen_rect.h as f64) / 2.) as f32;
             match vis {
                 Circle(color, radius) => {}
                 Sprite(img) => {

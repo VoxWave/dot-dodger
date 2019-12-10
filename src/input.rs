@@ -1,9 +1,9 @@
-use std::collections::{HashMap, HashSet};
-use std::hash::Hash;
 use ggez::{
-    event::{self, KeyCode, Button},
+    event::{self, Button, KeyCode},
     input::gamepad::GamepadId,
 };
+use std::collections::{HashMap, HashSet};
+use std::hash::Hash;
 
 pub struct InputHandler {
     input_map: HashMap<InputType, (u64, LogicalInput)>,
@@ -15,14 +15,38 @@ pub struct InputHandler {
 impl InputHandler {
     pub fn new() -> Self {
         let mut input_map = HashMap::new();
-        input_map.insert(InputType::KeyBoard(KeyCode::W), (0, LogicalInput::Axis(Axis::Y, AxisState::Positive)));
-        input_map.insert(InputType::KeyBoard(KeyCode::A), (0, LogicalInput::Axis(Axis::X, AxisState::Negative)));
-        input_map.insert(InputType::KeyBoard(KeyCode::S), (0, LogicalInput::Axis(Axis::Y, AxisState::Negative)));
-        input_map.insert(InputType::KeyBoard(KeyCode::D), (0, LogicalInput::Axis(Axis::X, AxisState::Positive)));
-        input_map.insert(InputType::KeyBoard(KeyCode::Up), (0, LogicalInput::Axis(Axis::Y, AxisState::Positive)));
-        input_map.insert(InputType::KeyBoard(KeyCode::Left), (0, LogicalInput::Axis(Axis::X, AxisState::Negative)));
-        input_map.insert(InputType::KeyBoard(KeyCode::Down), (0, LogicalInput::Axis(Axis::Y, AxisState::Negative)));
-        input_map.insert(InputType::KeyBoard(KeyCode::Right), (0, LogicalInput::Axis(Axis::X, AxisState::Positive)));
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::W),
+            (0, LogicalInput::Axis(Axis::Y, AxisState::Positive)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::A),
+            (0, LogicalInput::Axis(Axis::X, AxisState::Negative)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::S),
+            (0, LogicalInput::Axis(Axis::Y, AxisState::Negative)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::D),
+            (0, LogicalInput::Axis(Axis::X, AxisState::Positive)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::Up),
+            (0, LogicalInput::Axis(Axis::Y, AxisState::Positive)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::Left),
+            (0, LogicalInput::Axis(Axis::X, AxisState::Negative)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::Down),
+            (0, LogicalInput::Axis(Axis::Y, AxisState::Negative)),
+        );
+        input_map.insert(
+            InputType::KeyBoard(KeyCode::Right),
+            (0, LogicalInput::Axis(Axis::X, AxisState::Positive)),
+        );
 
         InputHandler {
             input_map,
@@ -32,7 +56,10 @@ impl InputHandler {
         }
     }
 
-    fn update_set<T>(set: &mut HashSet<T>, value: T, pressed: bool) where T: Eq + Hash {
+    fn update_set<T>(set: &mut HashSet<T>, value: T, pressed: bool)
+    where
+        T: Eq + Hash,
+    {
         if pressed {
             set.insert(value);
         } else {
@@ -45,10 +72,10 @@ impl InputHandler {
         match raw_input {
             KeyBoard(keycode, pressed) => {
                 Self::update_set(&mut self.key_states, keycode, pressed);
-            },
+            }
             Button(button, pressed) => {
                 Self::update_set(&mut self.button_states, button, pressed);
-            },
+            }
             Axis(id, axis, value) => {
                 self.axis_states.insert((id, axis), value);
             }
@@ -60,15 +87,12 @@ impl InputHandler {
         self.key_states
             .iter()
             .flat_map(|key| self.input_map.get(&KeyBoard(*key)).cloned())
-        .chain(
-            self.button_states
-            .iter()
-            .flat_map(|button| self.input_map.get(&Button(*button)).cloned())
-        )
-        .chain(
-            self.axis_states
-            .iter()
-            .flat_map(|((id, axis), value)| {
+            .chain(
+                self.button_states
+                    .iter()
+                    .flat_map(|button| self.input_map.get(&Button(*button)).cloned()),
+            )
+            .chain(self.axis_states.iter().flat_map(|((id, axis), value)| {
                 if let Some((player_id, l_input)) = self.input_map.get(&Axis(*id, *axis)) {
                     match l_input {
                         LogicalInput::Axis(axis, _) => {
@@ -84,8 +108,8 @@ impl InputHandler {
                 } else {
                     None
                 }
-            })
-        ).collect()
+            }))
+            .collect()
     }
 }
 
@@ -110,7 +134,8 @@ pub enum LogicalInput {
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq, Debug)]
 pub enum Axis {
-    X, Y,
+    X,
+    Y,
 }
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq, Debug)]

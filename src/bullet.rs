@@ -19,11 +19,7 @@ pub struct BulletPatternSystem;
 pub struct NewBullets(pub Vec<Entity>);
 
 impl<'a> System<'a> for BulletPatternSystem {
-    type SystemData = (
-        Entities<'a>,
-        Read<'a, LazyUpdate>,
-        ReadExpect<'a, Tick>,
-    );
+    type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadExpect<'a, Tick>);
 
     fn run(&mut self, (entities, world, cur_tick): Self::SystemData) {
         let mut t = cur_tick.0 as f32;

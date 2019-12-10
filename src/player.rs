@@ -2,9 +2,9 @@ use std::collections::{HashMap, HashSet};
 use std::sync::mpsc::Receiver;
 
 use crate::{
+    input::{Axis, AxisState, LogicalInput},
     na::{zero, Vector2},
     physics::Velocity,
-    input::{LogicalInput, Axis, AxisState},
 };
 
 use specs::{Component, Entity, Join, ReadStorage, System, VecStorage, WriteStorage};
@@ -52,14 +52,18 @@ impl PlayerControlSystem {
             match message {
                 NewPlayer(entity) => self.players.push(entity),
                 Input(player_id, LogicalInput::Axis(axis, state)) => {
-                    if let Some(player_input) = self.players.get(player_id as usize).and_then(|entity| player_inputs.get_mut(*entity)) {
+                    if let Some(player_input) = self
+                        .players
+                        .get(player_id as usize)
+                        .and_then(|entity| player_inputs.get_mut(*entity))
+                    {
                         match axis {
                             Axis::X => player_input.0 = state,
                             Axis::Y => player_input.1 = state,
                         }
                     }
-                },
-                _ => {},
+                }
+                _ => {}
             }
         }
     }
@@ -77,23 +81,25 @@ impl<'a> System<'a> for PlayerControlSystem {
             player_input.1 = AxisState::Neutral;
         });
         self.drain_messages(&mut players);
-        (&players, &mut velocities).join().for_each(|(player_input, velocity)| {
-            let new_velocity = match player_input {
-                PlayerInputState(x, y) => {
-                    let state_to_float = |x| match x {
-                        &AxisState::Positive => 1.,
-                        &AxisState::Neutral => 0.,
-                        &AxisState::Negative => -1.,
-                    };
-                    Vector2::new(state_to_float(x), state_to_float(y)) 
-                },
-            };
-            if new_velocity == zero() {
-                velocity.0 = new_velocity;
-            } else {
-                velocity.0 = new_velocity.normalize() * PLAYER_SPEED;
-            }
-        });
+        (&players, &mut velocities)
+            .join()
+            .for_each(|(player_input, velocity)| {
+                let new_velocity = match player_input {
+                    PlayerInputState(x, y) => {
+                        let state_to_float = |x| match x {
+                            &AxisState::Positive => 1.,
+                            &AxisState::Neutral => 0.,
+                            &AxisState::Negative => -1.,
+                        };
+                        Vector2::new(state_to_float(x), state_to_float(y))
+                    }
+                };
+                if new_velocity == zero() {
+                    velocity.0 = new_velocity;
+                } else {
+                    velocity.0 = new_velocity.normalize() * PLAYER_SPEED;
+                }
+            });
         // let mut new_vel = zero::<Vector2<f64>>();
         // let pressed_buttons: HashSet<&Direction> = self
         //     .button_states

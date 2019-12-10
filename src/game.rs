@@ -1,20 +1,25 @@
-use std::{sync::mpsc::{channel, Sender}, time::Instant};
+use std::{
+    sync::mpsc::{channel, Sender},
+    time::Instant,
+};
 
 use ggez::{
     event::{self, EventHandler},
-    graphics, Context, GameResult,
+    graphics,
     input::keyboard::{KeyCode, KeyMods},
+    Context, GameResult,
 };
-use specs::{Builder, Dispatcher, DispatcherBuilder, World, prelude::WorldExt};
+use specs::{prelude::WorldExt, Builder, Dispatcher, DispatcherBuilder, World};
 
 use crate::{
     bullet::{BulletComponent, BulletPatternSystem},
     collision::{CollisionSystem, Hitbox},
+    input::{Axis, AxisState, InputHandler, RawInput},
+    na::{Point2, Vector2},
     physics::{Acceleration, PhysicsSystem, Position, Velocity},
-    player::{PlayerControlSystem, PlayerInputState, PCSMessage},
+    player::{PCSMessage, PlayerControlSystem, PlayerInputState},
     rendering::{Renderer, Visual},
-    input::{AxisState, Axis, InputHandler, RawInput},
-    Tick, FRAME, na::{Vector2, Point2},
+    Tick, FRAME,
 };
 
 pub struct DotDodger<'a, 'b> {
@@ -97,13 +102,21 @@ impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
         graphics::present(ctx)
     }
 
-    fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, repeat: bool) {
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        repeat: bool,
+    ) {
         if !repeat {
-            self.input_handler.handle_input(RawInput::KeyBoard(keycode, true));
+            self.input_handler
+                .handle_input(RawInput::KeyBoard(keycode, true));
         }
     }
 
     fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
-        self.input_handler.handle_input(RawInput::KeyBoard(keycode, false));
+        self.input_handler
+            .handle_input(RawInput::KeyBoard(keycode, false));
     }
 }
