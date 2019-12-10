@@ -13,7 +13,7 @@ use crate::{
     physics::{Acceleration, PhysicsSystem, Position, Velocity},
     player::{PlayerControlSystem, PlayerInputState, PCSMessage},
     rendering::{Renderer, Visual},
-    input::{AxisState, Axis, InputConfig, RawInput},
+    input::{AxisState, Axis, InputHandler, RawInput},
     Tick, FRAME, na::{Vector2, Point2},
 };
 
@@ -65,14 +65,13 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             renderer,
             last_tick: Instant::now(),
             input_channel: send,
-            raw_inputs: Vec::new(),
             input_handler: InputHandler::new(),
         }
     }
 
     fn handle_input(&mut self) {
-        for raw_input in self.raw_inputs.drain(..) {
-            self.input_handler.set_input(raw_input)
+        for (player_id, input) in self.input_handler.get_inputs() {
+            self.input_channel.send(PCSMessage::Input(player_id, input));
         }
     }
 }
@@ -100,11 +99,11 @@ impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
 
     fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, repeat: bool) {
         if !repeat {
-            self.raw_inputs.push(keycode);
+            self.input_handler.handle_input(RawInput::KeyBoard(keycode, true));
         }
     }
 
-    fn key_up_event(&mut self, ctx: &mut Context, keycode:) {
-
+    fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+        self.input_handler.handle_input(RawInput::KeyBoard(keycode, false));
     }
 }

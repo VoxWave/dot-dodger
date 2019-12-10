@@ -9,6 +9,8 @@ use crate::{
 
 use specs::{Component, Entity, Join, ReadStorage, System, VecStorage, WriteStorage};
 
+const PLAYER_SPEED: f64 = 3.;
+
 //x and y input values
 #[derive(Component)]
 #[storage(VecStorage)]
@@ -70,6 +72,10 @@ impl<'a> System<'a> for PlayerControlSystem {
     );
 
     fn run(&mut self, (mut players, mut velocities): Self::SystemData) {
+        (&mut players).join().for_each(|mut player_input| {
+            player_input.0 = AxisState::Neutral;
+            player_input.1 = AxisState::Neutral;
+        });
         self.drain_messages(&mut players);
         (&players, &mut velocities).join().for_each(|(player_input, velocity)| {
             let new_velocity = match player_input {
@@ -79,13 +85,13 @@ impl<'a> System<'a> for PlayerControlSystem {
                         &AxisState::Neutral => 0.,
                         &AxisState::Negative => -1.,
                     };
-                    Vector2::new(state_to_float(x), state_to_float(y))
+                    Vector2::new(state_to_float(x), state_to_float(y)) 
                 },
             };
             if new_velocity == zero() {
-                velocity.0 = new_velocity
+                velocity.0 = new_velocity;
             } else {
-                velocity.0 = new_velocity.normalize()
+                velocity.0 = new_velocity.normalize() * PLAYER_SPEED;
             }
         });
         // let mut new_vel = zero::<Vector2<f64>>();
