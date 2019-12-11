@@ -50,13 +50,13 @@ impl Renderer {
                 Sprite(img, scale) => {
                     match img.as_ref() {
                         "bullet" => {
-                            bullet_batch.add(DrawParam::default().scale([*scale, *scale]).dest([x - scale*bullet_offset_x, y - scale*bullet_offset_y]));
+                            bullet_batch.add(DrawParam::default().offset([0.5, 0.5]).scale([*scale, *scale]).dest([x, y]));
                         }
                         _ => {
                             let sprite = self.sprites.get(img).unwrap();
                             let sprite_offset_x = (sprite.width() as f32) / 2.;
                             let sprite_offset_y = (sprite.height() as f32) / 2.;
-                            draw(ctx, sprite, DrawParam::default().scale([*scale, *scale]).dest([x - scale*sprite_offset_x, y - scale*sprite_offset_y])).unwrap();
+                            draw(ctx, sprite, DrawParam::default().offset([0.5, 0.5]).scale([*scale, *scale]).dest([x, y])).unwrap();
                         }
                     };
                 }

@@ -24,6 +24,8 @@ use crate::{
     Tick, FRAME,
 };
 
+mod state;
+
 pub struct DotDodger<'a, 'b> {
     world: World,
     dispatcher: Dispatcher<'a, 'b>,
@@ -59,7 +61,7 @@ impl<'a, 'b> DotDodger<'a, 'b> {
             .with(Position(Point2::new(0., 0.)))
             .with(Velocity(Vector2::new(0., 0.)))
             .with(Acceleration(Vector2::new(0., 0.)))
-            .with(Visual::Sprite("player".to_string(), 10.))
+            .with(Visual::Sprite("player".to_string(), 1.))
             .with(Hitbox::Point(Point2::new(0., 0.)))
             .build();
 
@@ -85,7 +87,7 @@ impl<'a, 'b> DotDodger<'a, 'b> {
 }
 
 impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
         if self.last_tick.elapsed() >= FRAME {
             self.handle_input();
             self.dispatcher.dispatch(&self.world);
