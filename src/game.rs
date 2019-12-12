@@ -24,18 +24,15 @@ use crate::{
     Tick, FRAME,
 };
 
+use self::state::GameState;
+
 mod state;
 
-pub struct DotDodger<'a, 'b> {
-    world: World,
-    dispatcher: Dispatcher<'a, 'b>,
-    renderer: Renderer,
-    last_tick: Instant,
-    input_channel: Sender<PCSMessage>,
-    input_handler: InputHandler,
+pub struct DotDodger {
+    current_state: Box<dyn GameState>,
 }
 
-impl<'a, 'b> DotDodger<'a, 'b> {
+impl DotDodger {
     pub fn new(ctx: &mut Context) -> Self {
         let mut world = World::new();
         world.register::<Visual>();
@@ -86,7 +83,7 @@ impl<'a, 'b> DotDodger<'a, 'b> {
     }
 }
 
-impl<'a, 'b> EventHandler for DotDodger<'a, 'b> {
+impl EventHandler for DotDodger {
     fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
         if self.last_tick.elapsed() >= FRAME {
             self.handle_input();
