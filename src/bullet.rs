@@ -22,18 +22,16 @@ impl<'a> System<'a> for BulletPatternSystem {
     type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadExpect<'a, Tick>);
 
     fn run(&mut self, (entities, world, cur_tick): Self::SystemData) {
-        let mut t = cur_tick.0 as f32;
-        if t.rem_euclid(5.) == 0. {
-            t /= 10.;
-            let rotation = Rotation2::new(t);
-            let bullet = create_bullet(
-                world.create_entity(&entities),
-                Point2::new(200., 200.),
-                Vector2::new(0., 0.),//upcast_vector(rotation * Vector2::new(2., 2.)),
-                zero(),
-                64./2.,
-            );
-        }
+        let mut t = cur_tick.0 as f64;
+        t /= 10.;
+        let rotation = Rotation2::new(t);
+        create_bullet(
+            world.create_entity(&entities),
+            Point2::new(200., 200.),
+            rotation * Vector2::new(2., 2.),
+            zero(),
+            20./2.,
+        );
     }
 }
 
@@ -45,11 +43,11 @@ pub fn create_bullet(
     rad: f64,
 ) -> Entity {
     builder
-        .with(Visual::Sprite("bullet".to_string(), 1.))
+        .with(Visual::Sprite("bullet".to_string(), 20./64.))
         .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))
         .with(Position(pos))
         .with(Velocity(vel))
-        .with(Acceleration(zero()))
+        .with(Acceleration(acc))
         .with(BulletComponent)
         .build()
 }
