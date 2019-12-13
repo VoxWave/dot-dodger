@@ -29,7 +29,7 @@ use self::state::GameState;
 mod state;
 
 pub struct DotDodger {
-    current_state: Box<dyn GameState>,
+    current_state: Box<dyn GameState<HashMap<String, u64>>>,
 }
 
 impl DotDodger {

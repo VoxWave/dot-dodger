@@ -6,7 +6,7 @@ use std::{
 use specs::{
     prelude::WorldExt,
     Builder,
-    Dispatcher, 
+    Dispatcher,
     DispatcherBuilder,
     World,
 };
@@ -35,9 +35,9 @@ impl<'a, 'b> InGame<'a, 'b> {
     }
 }
 
-impl <'a, 'b> GameState for InGame<'a, 'b> {
-    fn update(self) -> Box<dyn GameState> {
-        Box::new(self)
+impl <'a, 'b> GameState<HashMap<String, bool>> for InGame<'a, 'b> {
+    fn update(self, shared_data: HashMap<String, bool>) -> () {
+        self
     }
 
     fn draw(&mut self, ctx: &mut Context) {
