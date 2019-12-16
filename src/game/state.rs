@@ -2,15 +2,25 @@ use ggez::Context;
 
 use crate::input::RawInput;
 
-mod ingame_state;
+pub mod ingame;
 
-pub trait GameState<T> {
-    fn update(self, shared_data: T) -> (Trans, T);
-    fn draw(&mut self, ctx: &mut Context);
+pub struct SharedData {
+    back_to_main_menu: bool,
+}
+
+pub trait GameState {
+    fn update(&mut self, shared_data: Option<&mut SharedData>) -> Transition;
+    fn draw(&mut self, ctx: &mut Context) -> GameResult<()>;
     fn handle_input(&mut self, input: RawInput);
 }
 
-enum Trans {
-
+enum Transition {
+    Stay,
+    Switch(Box<dyn GameState>),
+    Push(Box<dyn GameState>),
+    Pop,
+    Quit
 }
+
+
 
