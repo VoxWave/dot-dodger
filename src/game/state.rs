@@ -3,6 +3,7 @@ use ggez::{Context, GameResult};
 use crate::input::RawInput;
 
 pub mod ingame;
+pub mod main_menu;
 
 pub struct SharedData {
     back_to_main_menu: bool,
@@ -17,7 +18,7 @@ impl SharedData {
 }
 
 pub trait GameState {
-    fn update(&mut self, shared_data: &mut SharedData) -> Transition;
+    fn update(&mut self, ctx: &mut Context, shared_data: &mut SharedData) -> Transition;
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()>;
     fn handle_input(&mut self, input: RawInput);
 }

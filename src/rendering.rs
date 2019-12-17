@@ -38,8 +38,6 @@ impl Renderer {
         (positions, visuals): (ReadStorage<Position>, ReadStorage<Visual>),
     ) {
         let bullet_sprite = self.sprites.get("bullet").unwrap().clone();
-        let bullet_offset_x = (bullet_sprite.width() as f32) / 2.;
-        let bullet_offset_y = (bullet_sprite.height() as f32) / 2.;
         let mut bullet_batch = SpriteBatch::new(bullet_sprite);
         (&positions, &visuals).join().for_each(|(pos, vis)| {
             let screen_rect = ggez::graphics::screen_coordinates(ctx);
@@ -54,8 +52,6 @@ impl Renderer {
                         }
                         _ => {
                             let sprite = self.sprites.get(img).unwrap();
-                            let sprite_offset_x = (sprite.width() as f32) / 2.;
-                            let sprite_offset_y = (sprite.height() as f32) / 2.;
                             draw(ctx, sprite, DrawParam::default().offset([0.5, 0.5]).scale([*scale, *scale]).dest([x, y])).unwrap();
                         }
                     };

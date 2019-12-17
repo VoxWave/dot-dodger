@@ -16,7 +16,7 @@ use specs::{prelude::WorldExt, Builder, Dispatcher, DispatcherBuilder, World};
 use crate::{
     bullet::{BulletComponent, BulletPatternSystem},
     collision::{CollisionSystem, Hitbox},
-    game::state::{GameState, ingame::InGame, SharedData},
+    game::state::{GameState, ingame::InGame, main_menu::MainMenu, SharedData},
     input::{Axis, AxisState, InputHandler, RawInput},
     na::{Point2, Vector2},
     physics::{Acceleration, PhysicsSystem, Position, Velocity},
@@ -35,7 +35,7 @@ pub struct DotDodger {
 impl DotDodger {
     pub fn new(ctx: &mut Context) -> Self {
         DotDodger {
-            current_states: vec![Box::new(InGame::new(ctx))],
+            current_states: vec![Box::new(MainMenu::new())],
             shared_data: SharedData::new(),
         }
     }
@@ -49,7 +49,7 @@ impl EventHandler for DotDodger {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         use crate::game::state::Transition::*;
         let top = self.top_state();
-        let transition = self.current_states[top].update(&mut self.shared_data);
+        let transition = self.current_states[top].update(ctx, &mut self.shared_data);
         match transition {
             Stay => {},
             Switch(new_state) => self.current_states[top] = new_state,

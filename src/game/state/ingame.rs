@@ -81,7 +81,7 @@ impl<'a, 'b> InGame<'a, 'b> {
 }
 
 impl <'a, 'b> GameState for InGame<'a, 'b> {
-    fn update(&mut self, shared_data: &mut SharedData) -> Transition {
+    fn update(&mut self, ctx: &mut Context, shared_data: &mut SharedData) -> Transition {
         if self.last_tick.elapsed() >= FRAME {
             for (player_id, input) in self.input_handler.get_inputs() {
                 self.input_channel.send(PCSMessage::Input(player_id, input)).unwrap();
