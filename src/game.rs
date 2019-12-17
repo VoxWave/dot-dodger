@@ -16,7 +16,7 @@ use specs::{prelude::WorldExt, Builder, Dispatcher, DispatcherBuilder, World};
 use crate::{
     bullet::{BulletComponent, BulletPatternSystem},
     collision::{CollisionSystem, Hitbox},
-    game::state::{GameState, ingame::InGame},
+    game::state::{GameState, ingame::InGame, SharedData},
     input::{Axis, AxisState, InputHandler, RawInput},
     na::{Point2, Vector2},
     physics::{Acceleration, PhysicsSystem, Position, Velocity},
@@ -28,31 +28,48 @@ use crate::{
 mod state;
 
 pub struct DotDodger {
-    current_state: Box<dyn GameState>,
+    current_states: Vec<Box<dyn GameState>>,
+    shared_data: SharedData,
 }
 
 impl DotDodger {
     pub fn new(ctx: &mut Context) -> Self {
         DotDodger {
-            current_state: Box::new(InGame::new(ctx)),
+            current_states: vec![Box::new(InGame::new(ctx))],
+            shared_data: SharedData::new(),
         }
     }
 
-    fn handle_input(&mut self) {
-        for (player_id, input) in self.input_handler.get_inputs() {
-            self.input_channel.send(PCSMessage::Input(player_id, input)).unwrap();
-        }
+    fn top_state(&self) -> usize {
+        self.current_states.len() - 1
     }
 }
 
 impl EventHandler for DotDodger {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
-        self.current_state.update(None);
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        use crate::game::state::Transition::*;
+        let top = self.top_state();
+        let transition = self.current_states[top].update(&mut self.shared_data);
+        match transition {
+            Stay => {},
+            Switch(new_state) => self.current_states[top] = new_state,
+            Push(new_state) => self.current_states.push(new_state),
+            Pop => {
+                self.current_states.pop().unwrap();
+                if self.current_states.is_empty() {
+                    ggez::event::quit(ctx);    
+                }
+            },
+            Quit => {
+                ggez::event::quit(ctx);
+            },
+        };
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        self.current_state.draw(ctx)
+        let top = self.top_state();
+        self.current_states[top].draw(ctx)
     }
 
     fn key_down_event(
@@ -62,14 +79,14 @@ impl EventHandler for DotDodger {
         _keymods: KeyMods,
         repeat: bool,
     ) {
+        let top = self.top_state();
         if !repeat {
-            self.input_handler
-                .handle_input(RawInput::KeyBoard(keycode, true));
+            self.current_states[top].handle_input(RawInput::KeyBoard(keycode, true));
         }
     }
 
     fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
-        self.input_handler
-            .handle_input(RawInput::KeyBoard(keycode, false));
+        let top = self.top_state();
+        self.current_states[top].handle_input(RawInput::KeyBoard(keycode, false));
     }
 }
