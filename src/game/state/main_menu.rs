@@ -1,4 +1,4 @@
-use ggez::{Context, GameResult, graphics, event::KeyCode};
+use ggez::{Context, GameResult, graphics::{self, DrawParam, Text}, event::KeyCode};
 
 use crate::{
     game::state::{GameState, SharedData, Transition, ingame::InGame},
@@ -7,12 +7,14 @@ use crate::{
 
 pub struct MainMenu {
     start_game: bool,
+    text: Text,
 }
 
 impl MainMenu {
     pub fn new() -> Self {
         MainMenu {
             start_game: false,
+            text: Text::new("Main menu\n Press A to begin"),
         }
     }
 }
@@ -29,6 +31,7 @@ impl GameState for MainMenu {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, graphics::BLACK);
+        graphics::draw(ctx, &self.text, DrawParam::default()).unwrap();
         graphics::present(ctx)
     }
 
