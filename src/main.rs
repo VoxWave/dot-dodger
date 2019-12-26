@@ -31,6 +31,7 @@ mod bullet;
 mod collision;
 mod game;
 mod input;
+mod life;
 mod physics;
 mod player;
 mod rendering;

@@ -11,6 +11,7 @@ use crate::bullet::BulletComponent;
 use crate::handle_death;
 use crate::physics::Position;
 use crate::utils::{downcast_point, downcast_vector};
+use crate::life::Lives;
 
 #[derive(Component, Debug)]
 pub enum Hitbox {
@@ -47,9 +48,10 @@ impl<'a> System<'a> for CollisionSystem {
         ReadStorage<'a, Hitbox>,
         ReadStorage<'a, Position>,
         ReadStorage<'a, BulletComponent>,
+        ReadStorage<'a, Lives>,
     );
 
-    fn run(&mut self, (player, hitboxes, positions, bullets): Self::SystemData) {
+    fn run(&mut self, (player, hitboxes, positions, bullets, lives): Self::SystemData) {
         for (_, p_hitbox, p_pos) in (&player, &hitboxes, &positions).join() {
             let collision =
             (&hitboxes, &positions, &bullets)
@@ -61,6 +63,7 @@ impl<'a> System<'a> for CollisionSystem {
                     )
                 });
             if let Some(_) = collision {
+                //TODO: make the real death logic
                 handle_death();
             } else {
                 println!("dedness not happend");
