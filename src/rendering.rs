@@ -5,12 +5,14 @@ use ggez::{
     graphics::{draw, spritebatch::SpriteBatch, DrawParam, Image},
     Context,
 };
-use specs::{Component, DenseVecStorage, Join, ReadStorage};
+use specs::{Component, DenseVecStorage, Entities, Join, ReadStorage};
 
 use ggez::mint::Point2;
 
 use crate::physics::Position;
 use crate::rendering::Visual::*;
+use crate::collision::Invul;
+
 #[derive(Component)]
 pub enum Visual {
     Circle([f32; 4], f64),
@@ -35,11 +37,11 @@ impl Renderer {
     pub fn render(
         &self,
         ctx: &mut Context,
-        (positions, visuals): (ReadStorage<Position>, ReadStorage<Visual>),
+        (entities, positions, visuals, invuls): (Entities, ReadStorage<Position>, ReadStorage<Visual>, ReadStorage<Invul>),
     ) {
         let bullet_sprite = self.sprites.get("bullet").unwrap().clone();
         let mut bullet_batch = SpriteBatch::new(bullet_sprite);
-        (&positions, &visuals).join().for_each(|(pos, vis)| {
+        (&entities, &positions, &visuals).join().for_each(|(id, pos, vis)| {
             let screen_rect = ggez::graphics::screen_coordinates(ctx);
             let x = (pos.0.x + (screen_rect.w as f64) / 2.) as f32;
             let y = (-pos.0.y + (screen_rect.h as f64) / 2.) as f32;
@@ -52,7 +54,14 @@ impl Renderer {
                         }
                         _ => {
                             let sprite = self.sprites.get(img).unwrap();
-                            draw(ctx, sprite, DrawParam::default().offset([0.5, 0.5]).scale([*scale, *scale]).dest([x, y])).unwrap();
+                            match invuls.get(id) {
+                                Some(invul) => {
+                                    if invul.0 % 2 == 0 {
+                                        draw(ctx, sprite, DrawParam::default().offset([0.5, 0.5]).scale([*scale, *scale]).dest([x, y])).unwrap();
+                                    }
+                                },
+                                None => draw(ctx, sprite, DrawParam::default().offset([0.5, 0.5]).scale([*scale, *scale]).dest([x, y])).unwrap(),
+                            };
                         }
                     };
                 }
