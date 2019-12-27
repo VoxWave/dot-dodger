@@ -17,7 +17,7 @@ use ggez::{Context, GameResult, graphics};
 use crate::{
     game::state::{GameState, Transition, SharedData, main_menu::MainMenu},
     bullet::BulletPatternSystem,
-    collision::{Hitbox, CollisionSystem},
+    collision::{Hitbox, CollisionSystem, Invul},
     life::{self, Lives},
     input::{AxisState, InputHandler, RawInput},
     na::{Point2, Vector2},
@@ -61,6 +61,7 @@ impl<'a, 'b> InGame<'a, 'b> {
             .create_entity()
             .with(PlayerInputState(AxisState::Neutral, AxisState::Neutral))
             .with(Lives(3))
+            .with(Invul(0))
             .with(Position(Point2::new(0., 0.)))
             .with(Velocity(Vector2::new(0., 0.)))
             .with(Acceleration(Vector2::new(0., 0.)))
@@ -94,8 +95,8 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
             if self.world.exec(|s| life::everyone_dead(s) ) {
                 return Transition::Switch(Box::new(MainMenu::new()))
             }
-            self.world.write_resource::<Tick>().0 += 1;
             self.last_tick = Instant::now();
+            self.world.write_resource::<Tick>().0 += 1;
         }
         Transition::Stay
     }
