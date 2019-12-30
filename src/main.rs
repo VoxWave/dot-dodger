@@ -35,6 +35,7 @@ mod life;
 mod physics;
 mod player;
 mod rendering;
+mod sound;
 mod utils;
 
 const FRAME: Duration = Duration::from_millis(1000 / 60);
@@ -44,7 +45,7 @@ pub struct Tick(u64);
 fn main() {
     let (mut ctx, mut event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
         .window_setup(WindowSetup::default().title("dot-dodger").vsync(false))
-        .window_mode(WindowMode::default().dimensions(540., 720.))
+        .window_mode(WindowMode::default().dimensions(480., 480.))
         .build()
         .expect("Failed to create a ggez context!");
 

@@ -24,6 +24,7 @@ use crate::{
     physics::{Position, Velocity, Acceleration, PhysicsSystem},
     player::{PCSMessage, PlayerInputState, PlayerControlSystem},
     rendering::{Renderer, Visual},
+    sound::SoundPlayer,
     Tick, FRAME,
 };
 
@@ -31,6 +32,7 @@ pub struct InGame<'a, 'b> {
     world: World,
     dispatcher: Dispatcher<'a, 'b>,
     renderer: Renderer,
+    sound_player: SoundPlayer,
     last_tick: Instant,
     input_channel: Sender<PCSMessage>,
     input_handler: InputHandler,
@@ -77,6 +79,7 @@ impl<'a, 'b> InGame<'a, 'b> {
             world,
             dispatcher,
             renderer,
+            sound_player: SoundPlayer::new(ctx),
             last_tick: Instant::now(),
             input_channel: send,
             input_handler: InputHandler::new(),

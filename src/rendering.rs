@@ -28,9 +28,9 @@ impl Renderer {
         let mut sprites = HashMap::new();
         sprites.insert(
             String::from("bullet"),
-            Image::new(c, "/bullet.png").unwrap(),
+            Image::new(c, "/sprites/bullet.png").unwrap(),
         );
-        sprites.insert(String::from("player"), Image::new(c, "/ship.png").unwrap());
+        sprites.insert(String::from("player"), Image::new(c, "/sprites/ship.png").unwrap());
 
         Renderer { sprites }
     }
