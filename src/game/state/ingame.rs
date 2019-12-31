@@ -79,7 +79,7 @@ impl<'a, 'b> InGame<'a, 'b> {
             world,
             dispatcher,
             renderer,
-            sound_player: SoundPlayer::new(ctx),
+            sound_player: SoundPlayer::new(ctx, snd_msg_receiver),
             last_tick: Instant::now(),
             input_channel: send,
             input_handler: InputHandler::new(),
@@ -98,6 +98,7 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
             if self.world.exec(|s| life::everyone_dead(s) ) {
                 return Transition::Switch(Box::new(MainMenu::new()))
             }
+            self.sound_player.update();
             self.last_tick = Instant::now();
             self.world.write_resource::<Tick>().0 += 1;
         }
