@@ -4,13 +4,15 @@ use ggez::{Context, audio::{SoundData, SoundSource, Source}};
 
 pub struct SoundPlayer {
     library: HashMap<String, SoundData>,
-    music: Source,
-    playing_sounds: Vec<S>
+    music: Option<(String, Source)>,
+    playing_sounds: Vec<Source>
 }
 
 pub enum SoundMessage {
-    PlayMusic(String),
-    Play
+    PlayMusic{name: String, looping: bool},
+    StopMusic,
+    PauseMusic,
+    PlaySound()
 }
 
 impl SoundPlayer {
@@ -20,7 +22,8 @@ impl SoundPlayer {
         let mut music = Source::from_data(ctx, music).unwrap();
         music.play().unwrap();
         SoundPlayer {
-            music,
+            library: sounds,
+            music: Some(("Stuck", music)),
         }
     }
 

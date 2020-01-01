@@ -44,10 +44,10 @@ impl<'a, 'b> InGame<'a, 'b> {
         world.register::<Visual>();
         world.register::<Lives>();
 
-        let (send, recv) = channel();
+        let (input_sender, input_recv) = channel();
 
         let mut dispatcher = DispatcherBuilder::new()
-            .with(PlayerControlSystem::new(recv), "player_control_system", &[])
+            .with(PlayerControlSystem::new(input_recv), "player_control_system", &[])
             .with(BulletPatternSystem, "bullet_pattern_system", &[])
             .with(
                 PhysicsSystem,
@@ -71,7 +71,7 @@ impl<'a, 'b> InGame<'a, 'b> {
             .with(Hitbox::Point(Point2::new(0., 0.)))
             .build();
 
-        send.send(PCSMessage::NewPlayer(player1)).unwrap();
+        input_sender.send(PCSMessage::NewPlayer(player1)).unwrap();
 
         let renderer = Renderer::new(ctx);
 
@@ -81,7 +81,7 @@ impl<'a, 'b> InGame<'a, 'b> {
             renderer,
             sound_player: SoundPlayer::new(ctx, snd_msg_receiver),
             last_tick: Instant::now(),
-            input_channel: send,
+            input_channel: input_sender,
             input_handler: InputHandler::new(),
         }
     }
