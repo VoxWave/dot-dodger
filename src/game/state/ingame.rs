@@ -1,6 +1,8 @@
 use std::{
-    collections::HashMap,
-    sync::mpsc::{channel, Sender},
+    sync::{
+        mpsc::{channel, Sender},
+        Mutex,
+    },
     time::Instant,
 };
 
@@ -24,7 +26,7 @@ use crate::{
     physics::{Position, Velocity, Acceleration, PhysicsSystem},
     player::{PCSMessage, PlayerInputState, PlayerControlSystem},
     rendering::{Renderer, Visual},
-    sound::SoundPlayer,
+    sound::{SoundChannel, SoundMessage, SoundPlayer},
     Tick, FRAME,
 };
 
@@ -45,6 +47,7 @@ impl<'a, 'b> InGame<'a, 'b> {
         world.register::<Lives>();
 
         let (input_sender, input_recv) = channel();
+        let (snd_msg_sender, snd_msg_receiver) = channel();
 
         let mut dispatcher = DispatcherBuilder::new()
             .with(PlayerControlSystem::new(input_recv), "player_control_system", &[])
@@ -73,6 +76,8 @@ impl<'a, 'b> InGame<'a, 'b> {
 
         input_sender.send(PCSMessage::NewPlayer(player1)).unwrap();
 
+        world.insert(SoundChannel(Mutex::new(snd_msg_sender)));
+
         let renderer = Renderer::new(ctx);
 
         InGame {
@@ -98,9 +103,12 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
             if self.world.exec(|s| life::everyone_dead(s) ) {
                 return Transition::Switch(Box::new(MainMenu::new()))
             }
-            self.sound_player.update();
+            self.sound_player.update(ctx);
             self.last_tick = Instant::now();
             self.world.write_resource::<Tick>().0 += 1;
+            if self.world.read_resource::<Tick>().0 == 600 {
+                self.world.read_resource::<SoundChannel>().0.lock().unwrap().send(SoundMessage::PlayMusic{name: "desert".to_string(), looping: true}).unwrap();
+            }
         }
         Transition::Stay
     }
