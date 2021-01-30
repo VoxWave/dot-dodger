@@ -30,7 +30,7 @@ impl SoundPlayer {
         sounds.insert("stuck".to_string(), music.clone());
         sounds.insert("desert".to_string(), SoundData::new(ctx, "/music/desert.mp3").unwrap());
         let mut music = Source::from_data(ctx, music).unwrap();
-        music.play().unwrap();
+        music.play(ctx).unwrap();
         SoundPlayer {
             library: sounds,
             music: Some(("stuck".to_string(), music)),
@@ -48,9 +48,9 @@ impl SoundPlayer {
                         Some((cur_name, mut src)) => {
                             if name != cur_name {
                                 let mut music = Source::from_data(ctx, self.library.get(&name).unwrap().clone()).unwrap();
-                                src.stop();
+                                src.stop(ctx);
                                 music.set_repeat(looping);
-                                music.play().unwrap();
+                                music.play(ctx).unwrap();
                                 self.music = Some((name, music));
                             } else {
                                 self.music = Some((cur_name, src));
@@ -59,7 +59,7 @@ impl SoundPlayer {
                         None => {
                             let mut music = Source::from_data(ctx, self.library.get(&name).unwrap().clone()).unwrap();
                             music.set_repeat(looping);
-                            music.play().unwrap();
+                            music.play(ctx).unwrap();
                             self.music = Some((name, music));
                         }
                     };

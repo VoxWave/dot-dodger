@@ -51,10 +51,7 @@ fn main() {
 
     let mut dot_dodger = DotDodger::new(&mut ctx);
 
-    match event::run(&mut ctx, &mut event_loop, &mut dot_dodger) {
-        Ok(_) => println!("Exited cleanly."),
-        Err(e) => println!("An error occured: {}", e),
-    }
+    event::run(ctx, event_loop, dot_dodger)
 }
 
 fn handle_death() {
