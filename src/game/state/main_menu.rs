@@ -30,7 +30,7 @@ impl GameState for MainMenu {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, graphics::BLACK);
+        graphics::clear(ctx, graphics::Color::BLACK);
         graphics::draw(ctx, &self.text, DrawParam::default()).unwrap();
         graphics::present(ctx)
     }

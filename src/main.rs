@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate specs_derive;
 
+use ggez::conf::FullscreenType;
 use nalgebra as na;
 use specs::Join;
 use std::borrow::BorrowMut;
@@ -45,7 +46,7 @@ pub struct Tick(u64);
 fn main() {
     let (mut ctx, mut event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
         .window_setup(WindowSetup::default().title("dot-dodger").vsync(false))
-        .window_mode(WindowMode::default().dimensions(480., 480.))
+        .window_mode(WindowMode::default().dimensions(1920., 1080.).fullscreen_type(FullscreenType::Desktop))
         .build()
         .expect("Failed to create a ggez context!");
 

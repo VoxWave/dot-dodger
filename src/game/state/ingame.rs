@@ -114,7 +114,7 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        graphics::clear(ctx, graphics::WHITE);
+        graphics::clear(ctx, graphics::Color::WHITE);
         let renderer = &self.renderer;
         self.world.exec(|s| {
             renderer.render(ctx, s);

@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33"
-ggez = "0.6.0-rc0"
+ggez = "0.7.0"
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
 specs = "0.15"
 specs-derive = "0.3"
