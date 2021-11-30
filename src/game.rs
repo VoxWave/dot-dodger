@@ -79,6 +79,9 @@ impl EventHandler for DotDodger {
         _keymods: KeyMods,
         repeat: bool,
     ) {
+        if keycode == KeyCode::Escape {
+            ggez::event::quit(ctx);
+        }
         let top = self.top_state();
         if !repeat {
             self.current_states[top].handle_input(RawInput::KeyBoard(keycode, true));

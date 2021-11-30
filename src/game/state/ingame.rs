@@ -94,7 +94,8 @@ impl<'a, 'b> InGame<'a, 'b> {
 
 impl <'a, 'b> GameState for InGame<'a, 'b> {
     fn update(&mut self, ctx: &mut Context, shared_data: &mut SharedData) -> Transition {
-        if self.last_tick.elapsed() >= FRAME {
+        let mut elapsed = self.last_tick.elapsed();
+        while elapsed >= FRAME {
             for (player_id, input) in self.input_handler.get_inputs() {
                 self.input_channel.send(PCSMessage::Input(player_id, input)).unwrap();
             }
@@ -104,11 +105,8 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
                 return Transition::Switch(Box::new(MainMenu::new()))
             }
             self.sound_player.update(ctx);
-            self.last_tick = Instant::now();
             self.world.write_resource::<Tick>().0 += 1;
-            if self.world.read_resource::<Tick>().0 == 600 {
-                self.world.read_resource::<SoundChannel>().0.lock().unwrap().send(SoundMessage::PlayMusic{name: "desert".to_string(), looping: true}).unwrap();
-            }
+            elapsed -= FRAME;
         }
         Transition::Stay
     }
