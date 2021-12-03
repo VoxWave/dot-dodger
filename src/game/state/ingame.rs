@@ -27,7 +27,7 @@ use crate::{
     player::{PCSMessage, PlayerInputState, PlayerControlSystem},
     rendering::{Renderer, Visual},
     sound::{SoundChannel, SoundMessage, SoundPlayer},
-    Tick, FRAME,
+    Tick, FRAME, enemy::EnemySpawnerSystem,
 };
 
 pub struct InGame<'a, 'b> {
@@ -52,6 +52,7 @@ impl<'a, 'b> InGame<'a, 'b> {
         let mut dispatcher = DispatcherBuilder::new()
             .with(PlayerControlSystem::new(input_recv), "player_control_system", &[])
             .with(BulletPatternSystem, "bullet_pattern_system", &[])
+            .with(EnemySpawnerSystem::new(), "enemy_spawner_system", &[])
             .with(
                 PhysicsSystem,
                 "physics_system",
@@ -94,8 +95,7 @@ impl<'a, 'b> InGame<'a, 'b> {
 
 impl <'a, 'b> GameState for InGame<'a, 'b> {
     fn update(&mut self, ctx: &mut Context, shared_data: &mut SharedData) -> Transition {
-        let mut elapsed = self.last_tick.elapsed();
-        while elapsed >= FRAME {
+        if self.last_tick.elapsed() >= FRAME {
             for (player_id, input) in self.input_handler.get_inputs() {
                 self.input_channel.send(PCSMessage::Input(player_id, input)).unwrap();
             }
@@ -106,7 +106,7 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
             }
             self.sound_player.update(ctx);
             self.world.write_resource::<Tick>().0 += 1;
-            elapsed -= FRAME;
+            self.last_tick = Instant::now();
         }
         Transition::Stay
     }

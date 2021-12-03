@@ -1,28 +1,13 @@
-use std::{
-    sync::mpsc::{channel, Sender},
-    time::Instant,
-};
-
-use kolli_desu::shapes::Circle;
-
 use ggez::{
-    event::{self, EventHandler},
-    graphics,
+    event::EventHandler,
     input::keyboard::{KeyCode, KeyMods},
     Context, GameResult,
 };
-use specs::{prelude::WorldExt, Builder, Dispatcher, DispatcherBuilder, World};
 
 use crate::{
-    bullet::{BulletComponent, BulletPatternSystem},
-    collision::{CollisionSystem, Hitbox},
-    game::state::{GameState, ingame::InGame, main_menu::MainMenu, SharedData},
-    input::{Axis, AxisState, InputHandler, RawInput},
-    na::{Point2, Vector2},
-    physics::{Acceleration, PhysicsSystem, Position, Velocity},
-    player::{PCSMessage, PlayerControlSystem, PlayerInputState},
-    rendering::{Renderer, Visual},
-    Tick, FRAME,
+    game::state::{GameState, main_menu::MainMenu, SharedData},
+    input::RawInput,
+
 };
 
 mod state;

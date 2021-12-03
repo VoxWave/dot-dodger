@@ -3,33 +3,19 @@ extern crate specs_derive;
 
 use ggez::conf::FullscreenType;
 use nalgebra as na;
-use specs::Join;
-use std::borrow::BorrowMut;
 
-use std::path::Path;
-use std::sync::mpsc::channel;
-use std::time::{Duration, Instant};
-
-use specs::{DispatcherBuilder, World};
-
-use clap::{App, Arg};
+use std::time::Duration;
 
 use ggez::{
     conf::{WindowMode, WindowSetup},
-    event::{self, EventHandler},
-    graphics, Context, ContextBuilder, GameResult,
+    event::{self}, ContextBuilder,
 };
 
-use crate::bullet::{BulletComponent, BulletPatternSystem};
-use crate::collision::CollisionSystem;
-use crate::collision::Hitbox;
 use crate::game::DotDodger;
-use crate::physics::{Acceleration, PhysicsSystem, Position, Velocity};
-use crate::player::PlayerControlSystem;
-use crate::rendering::Visual;
 
 mod bullet;
 mod collision;
+mod enemy;
 mod game;
 mod input;
 mod life;
@@ -53,8 +39,4 @@ fn main() {
     let mut dot_dodger = DotDodger::new(&mut ctx);
 
     event::run(ctx, event_loop, dot_dodger)
-}
-
-fn handle_death() {
-    println!("dedness happen");
 }

@@ -7,8 +7,7 @@ use kolli_desu::shapes::{Circle, ConvexPolygon, Shape};
 use specs::prelude::ParallelIterator;
 use specs::{Component, DenseVecStorage, ParJoin, ReadStorage, ReadExpect, WriteStorage, System, Join};
 
-use crate::bullet::BulletComponent;
-use crate::handle_death;
+use crate::bullet::NormalBullet;
 use crate::physics::Position;
 use crate::utils::{downcast_point, downcast_vector};
 use crate::life::Lives;
@@ -51,7 +50,7 @@ impl<'a> System<'a> for CollisionSystem {
         ReadStorage<'a, PlayerInputState>,
         ReadStorage<'a, Hitbox>,
         ReadStorage<'a, Position>,
-        ReadStorage<'a, BulletComponent>,
+        ReadStorage<'a, NormalBullet>,
         WriteStorage<'a, Lives>,
         WriteStorage<'a, Invul>,
     );

@@ -30,6 +30,7 @@ impl Renderer {
             String::from("bullet"),
             Image::new(c, "/sprites/bullet.png").unwrap(),
         );
+        sprites.insert(String::from("spiral_turret"), Image::new(c, "/sprites/spiral_turret.png").unwrap());
         sprites.insert(String::from("player"), Image::new(c, "/sprites/ship.png").unwrap());
 
         Renderer { sprites }
