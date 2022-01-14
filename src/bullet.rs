@@ -50,7 +50,7 @@ pub fn create_bullet(
     rad: f64,
 ) -> Entity {
     builder
-        .with(Visual::Sprite("bullet".to_string(), 20./64.))
+        .with(Visual::Sprite("bullet".to_string(), 1.))
         .with(Hitbox::Circle(Circle::new(Point2::new(0., 0.), rad as f32)))
         .with(Position(pos))
         .with(Velocity(vel))

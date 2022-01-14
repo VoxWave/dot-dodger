@@ -32,7 +32,7 @@ pub struct Tick(u64);
 fn main() {
     let (mut ctx, mut event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
         .window_setup(WindowSetup::default().title("dot-dodger").vsync(false))
-        .window_mode(WindowMode::default().dimensions(500., 500.).fullscreen_type(FullscreenType::Windowed))
+        .window_mode(WindowMode::default().dimensions(1920., 1080.).fullscreen_type(FullscreenType::Windowed))
         .build()
         .expect("Failed to create a ggez context!");
 
