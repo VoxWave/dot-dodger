@@ -5,12 +5,12 @@ authors = ["Victor Bankowski <victor_bankowski@hotmail.com>"]
 edition = "2018"
 
 [dependencies]
-clap = "2.33"
-ggez = "0.7.0"
+clap = "4.5.8"
+ggez = "0.9.3"
 kolli-desu = { git = "https://github.com/WaDelma/kolli-desu"}
-specs = "0.15"
-specs-derive = "0.3"
-nalgebra = "0.17.2"
-modulator = "0.1.0"
+specs = "0.20.0"
+specs-derive ="0.4.1"
+nalgebra ="0.33.0"
+modulator = "0.4.0"
 serde = { version = "1.0", features = ["derive"]}
 bincode = "1.2.0"
