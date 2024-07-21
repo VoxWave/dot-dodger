@@ -39,7 +39,7 @@ impl<'a> System<'a> for EnemySpawnerSystem {
             if *spawn_tick == tick.0 {
                 self.unspawned_enemies = index + 1;
                 match enemy_type {
-                    StationarySpiral => {
+                    EnemyType::StationarySpiral => {
                         create_stationary_spiral(world.create_entity(&entities), *pos);
                     },
                 }

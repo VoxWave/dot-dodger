@@ -30,13 +30,13 @@ const FRAME: Duration = Duration::from_millis(1000 / 60);
 pub struct Tick(u64);
 
 fn main() {
-    let (mut ctx, mut event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
+    let (ctx, event_loop) = ContextBuilder::new("dot-dodger", "VoxWave")
         .window_setup(WindowSetup::default().title("dot-dodger").vsync(false))
         .window_mode(WindowMode::default().dimensions(1920., 1080.).fullscreen_type(FullscreenType::Windowed))
         .build()
         .expect("Failed to create a ggez context!");
 
-    let mut dot_dodger = DotDodger::new(&mut ctx);
+    let dot_dodger = DotDodger::new();
 
     event::run(ctx, event_loop, dot_dodger)
 }

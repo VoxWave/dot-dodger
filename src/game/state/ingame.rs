@@ -14,7 +14,7 @@ use specs::{
     World,
 };
 
-use ggez::{Context, GameResult, graphics};
+use ggez::{graphics::{self, Canvas, Color}, Context, GameResult};
 
 use crate::{
     game::state::{GameState, Transition, SharedData, main_menu::MainMenu},
@@ -94,7 +94,7 @@ impl<'a, 'b> InGame<'a, 'b> {
 }
 
 impl <'a, 'b> GameState for InGame<'a, 'b> {
-    fn update(&mut self, ctx: &mut Context, shared_data: &mut SharedData) -> Transition {
+    fn update(&mut self, ctx: &mut Context, _shared_data: &mut SharedData) -> Transition {
         if self.last_tick.elapsed() >= FRAME {
             for (player_id, input) in self.input_handler.get_inputs() {
                 self.input_channel.send(PCSMessage::Input(player_id, input)).unwrap();
@@ -112,12 +112,12 @@ impl <'a, 'b> GameState for InGame<'a, 'b> {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        graphics::clear(ctx, graphics::Color::WHITE);
+        let canvas = Canvas::from_frame(ctx, Color::WHITE);
         let renderer = &self.renderer;
         self.world.exec(|s| {
             renderer.render(ctx, s);
         });
-        graphics::present(ctx)
+        canvas.finish(ctx)
     }
 
     fn handle_input(&mut self, input: RawInput) {

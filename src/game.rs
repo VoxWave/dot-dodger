@@ -1,7 +1,5 @@
 use ggez::{
-    event::EventHandler,
-    input::keyboard::{KeyCode, KeyMods},
-    Context, GameResult,
+    event::EventHandler, input::keyboard::{KeyCode, KeyMods}, Context, GameError, GameResult
 };
 
 use crate::{
@@ -18,7 +16,7 @@ pub struct DotDodger {
 }
 
 impl DotDodger {
-    pub fn new(ctx: &mut Context) -> Self {
+    pub fn new() -> Self {
         DotDodger {
             current_states: vec![Box::new(MainMenu::new())],
             shared_data: SharedData::new(),
@@ -30,7 +28,7 @@ impl DotDodger {
     }
 }
 
-impl EventHandler for DotDodger {
+impl EventHandler<GameError> for DotDodger {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         use crate::game::state::Transition::*;
         let top = self.top_state();

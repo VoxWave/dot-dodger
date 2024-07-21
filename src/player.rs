@@ -1,4 +1,3 @@
-use std::collections::{HashMap, HashSet};
 use std::sync::mpsc::Receiver;
 
 use crate::{
@@ -7,7 +6,7 @@ use crate::{
     physics::Velocity,
 };
 
-use specs::{Component, Entity, Join, ReadStorage, System, VecStorage, WriteStorage};
+use specs::{Component, Entity, Join, System, VecStorage, WriteStorage};
 
 const PLAYER_SPEED: f64 = 3.;
 
@@ -62,8 +61,7 @@ impl PlayerControlSystem {
                             Axis::Y => player_input.1 = state,
                         }
                     }
-                }
-                _ => {}
+                },
             }
         }
     }
